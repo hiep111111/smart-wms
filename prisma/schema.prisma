@@ -1,14 +1,74 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = env("DATABASE_URL")
+}
+
+// 1. Quản lý Người dùng & Phân quyền
+model User {
+  id           String          @id @default(cuid())
+  username     String          @unique
+  passwordHash String
+  role         String          @default("STAFF") // ADMIN, STAFF
+  movements    StockMovement[]
+  createdAt    DateTime        @default(now())
+}
+
+// 2. Danh mục Sản phẩm
+model Product {
+  id          String          @id @default(cuid())
+  sku         String          @unique // Mã QR chính (dùng để quét)
+  name        String
+  description String?
+  category    String?
+  unit        String          @default("Cái") // Thùng, Kiện, Cái...
+  stocks      Inventory[]
+  movements   StockMovement[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+// 3. Hệ tọa độ Kho ảo (Trái tim của 3D Map)
+model Location {
+  id        String      @id @default(cuid())
+  label     String      @unique // Ví dụ: Dãy-A-Kệ-01-Tầng-05
+  
+  // Tọa độ không gian (Cartesian Coordinates)
+  x         Int         // Row (Dãy kệ - Chiều ngang)
+  y         Int         // Shelf/Section (Vị trí trên dãy - Chiều sâu)
+  z         Int         // Level/Tier (Tầng cao - Chiều dọc)
+  
+  status    String      @default("AVAILABLE") // AVAILABLE, FULL, RESERVED
+  stocks    Inventory[]
+  movements StockMovement[]
+}
+
+// 4. Quản lý Tồn kho thực tế (N-N giữa Product & Location)
+model Inventory {
+  id         String   @id @default(cuid())
+  productId  String
+  locationId String
+  quantity   Int      @default(0)
+  
+  product    Product  @relation(fields: [productId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+
+  @@unique([productId, locationId]) // Đảm bảo 1 vị trí chỉ hiển thị 1 dòng cho 1 mã hàng
+}
+
+// 5. Nhật ký Nhập/Xuất (Audit Trail)
+model StockMovement {
+  id         String   @id @default(cuid())
+  type       String   // IN (Nhập), OUT (Xuất), TRANSFER (Điều chuyển)
+  quantity   Int
+  productId  String
+  locationId String
+  userId     String?
+  
+  product    Product  @relation(fields: [productId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
 }
