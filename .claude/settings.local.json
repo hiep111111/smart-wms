@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-next-app@latest . --typescript --eslint --tailwind --app --src-dir --no-import-alias --yes)",
+      "Bash(mv CLAUDE.md /tmp/CLAUDE.md.bak)",
+      "Bash(mv REQUIREMENTS.md /tmp/REQUIREMENTS.md.bak)",
+      "Bash(cp /tmp/CLAUDE.md.bak \"C:/Users/User/OneDrive/Desktop/smart-wms/CLAUDE.md\")",
+      "Bash(cp /tmp/REQUIREMENTS.md.bak \"C:/Users/User/OneDrive/Desktop/smart-wms/REQUIREMENTS.md\")",
+      "Bash(npx prisma:*)",
+      "Bash(mkdir -p components/kho components/qr components/ui lib actions/nhap-kho actions/xuat-kho types)",
+      "Bash(touch components/kho/.gitkeep components/qr/.gitkeep components/ui/.gitkeep lib/.gitkeep actions/nhap-kho/.gitkeep actions/xuat-kho/.gitkeep types/.gitkeep)"
+    ]
+  }
+}
