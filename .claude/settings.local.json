@@ -17,7 +17,8 @@
       "Bash(node -e \"const a = require\\(''@prisma/adapter-libsql''\\); console.log\\(JSON.stringify\\(Object.keys\\(a\\)\\)\\); const {createClient}=require\\(''@libsql/client''\\); const l=createClient\\({url:''file:./dev.db''}\\); const adapter=new a.PrismaLibSql\\(l\\); console.log\\(''adapter keys:'', Object.keys\\(adapter\\).slice\\(0,10\\)\\); console.log\\(''adapter provider:'', adapter.provider\\);\")",
       "Bash(del:*)",
       "Bash(node:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(find /c/Users/User/OneDrive/Desktop/smart-wms -name .env* -o -name tailwind.config.*)"
     ]
   }
 }
