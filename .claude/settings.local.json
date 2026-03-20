@@ -15,7 +15,9 @@
       "Bash(node -e \":*)",
       "Bash(node test-db.mjs)",
       "Bash(node -e \"const a = require\\(''@prisma/adapter-libsql''\\); console.log\\(JSON.stringify\\(Object.keys\\(a\\)\\)\\); const {createClient}=require\\(''@libsql/client''\\); const l=createClient\\({url:''file:./dev.db''}\\); const adapter=new a.PrismaLibSql\\(l\\); console.log\\(''adapter keys:'', Object.keys\\(adapter\\).slice\\(0,10\\)\\); console.log\\(''adapter provider:'', adapter.provider\\);\")",
-      "Bash(del:*)"
+      "Bash(del:*)",
+      "Bash(node:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

@@ -1,6 +1,7 @@
 import { config } from "dotenv";
 config();
 
+import bcrypt from "bcryptjs";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 import { PrismaClient } from "../src/generated/prisma";
 
@@ -16,12 +17,13 @@ async function main() {
   await prisma.user.deleteMany();
 
   // 1. Admin user
+  const passwordHash = await bcrypt.hash("admin123", 10);
   await prisma.user.upsert({
     where: { username: "admin" },
-    update: {},
+    update: { passwordHash },
     create: {
       username: "admin",
-      passwordHash: "admin123", // plain text for dev/test only
+      passwordHash,
       role: "ADMIN",
     },
   });
