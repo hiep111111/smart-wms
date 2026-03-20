@@ -8,7 +8,14 @@
       "Bash(cp /tmp/REQUIREMENTS.md.bak \"C:/Users/User/OneDrive/Desktop/smart-wms/REQUIREMENTS.md\")",
       "Bash(npx prisma:*)",
       "Bash(mkdir -p components/kho components/qr components/ui lib actions/nhap-kho actions/xuat-kho types)",
-      "Bash(touch components/kho/.gitkeep components/qr/.gitkeep components/ui/.gitkeep lib/.gitkeep actions/nhap-kho/.gitkeep actions/xuat-kho/.gitkeep types/.gitkeep)"
+      "Bash(touch components/kho/.gitkeep components/qr/.gitkeep components/ui/.gitkeep lib/.gitkeep actions/nhap-kho/.gitkeep actions/xuat-kho/.gitkeep types/.gitkeep)",
+      "Bash(npm install:*)",
+      "Bash(node -e \"const m = require\\(''@prisma/adapter-libsql''\\); console.log\\(Object.keys\\(m\\)\\)\")",
+      "Bash(npx tsx:*)",
+      "Bash(node -e \":*)",
+      "Bash(node test-db.mjs)",
+      "Bash(node -e \"const a = require\\(''@prisma/adapter-libsql''\\); console.log\\(JSON.stringify\\(Object.keys\\(a\\)\\)\\); const {createClient}=require\\(''@libsql/client''\\); const l=createClient\\({url:''file:./dev.db''}\\); const adapter=new a.PrismaLibSql\\(l\\); console.log\\(''adapter keys:'', Object.keys\\(adapter\\).slice\\(0,10\\)\\); console.log\\(''adapter provider:'', adapter.provider\\);\")",
+      "Bash(del:*)"
     ]
   }
 }
