@@ -34,70 +34,148 @@
 
 **Phạm vi phiên bản 1.0:**
 - Quản lý tối đa 1 kho vật lý với nhiều dãy kệ.
-- Hai vai trò người dùng: Admin và Staff.
+- 10 vai trò người dùng chia thành 4 nhóm: Quản trị (Admin, Giám đốc, Phó Giám đốc), Kho (Thủ kho, Nhân viên kho), Kế toán (Kế toán trưởng, Kế toán phó, Nhân viên kế toán), Kinh doanh (Nhân viên Sale). Nhóm Văn phòng (Nhân viên văn phòng) hỗ trợ tạo phiếu.
 - Không hỗ trợ multi-warehouse, lot tracking, hay tích hợp ERP trong phạm vi này.
 
 ---
 
 ## 2. User Personas & Authorization Matrix
 
-### 2.1 Persona A — Quản trị viên (Admin)
+### 2.1 Persona 1 — Admin
 
 | Thuộc tính | Chi tiết |
 |---|---|
-| **Vai trò thực tế** | Quản lý kho / Trưởng bộ phận logistics |
-| **Mục tiêu chính** | Có cái nhìn tổng quan về toàn bộ kho, kiểm soát danh mục hàng hóa và vị trí, phân tích dữ liệu để ra quyết định |
-| **Nỗi đau hiện tại** | Phải đối chiếu nhiều file Excel thủ công, không biết hàng thực sự đang ở đâu, khó phát hiện sai lệch tồn kho |
-| **Thiết bị sử dụng** | Chủ yếu Desktop/Laptop, đôi khi tablet |
-| **Mức độ tech** | Trung bình — biết dùng phần mềm quản lý, không cần đọc code |
-
-**Quyền hạn đầy đủ của Admin:**
-- Toàn quyền CRUD: User, Product, Location, Inventory.
-- Xem và export toàn bộ Audit Log (StockMovement).
-- Cấu hình ngưỡng cảnh báo tồn kho (min/max stock level) cho từng sản phẩm.
-- Quản lý sơ đồ kho: thêm/xóa/sửa vị trí (Location), thay đổi trạng thái vị trí.
-- Thực hiện mọi giao dịch nhập/xuất/điều chuyển.
-- Reset mật khẩu người dùng.
+| **Vai trò thực tế** | Quản trị viên hệ thống, thường là trưởng bộ phận IT hoặc quản lý kho cấp cao được giao quyền hệ thống |
+| **Mục tiêu chính** | Duy trì hệ thống hoạt động ổn định, cấu hình phân quyền, kiểm soát toàn bộ dữ liệu kho |
+| **Thiết bị sử dụng** | Desktop / Laptop |
+| **Quyền hạn cố định** | Toàn quyền CRUD: User, Product, Location; phê duyệt phiếu nhập/xuất; xem và export toàn bộ audit log; cấu hình ngưỡng cảnh báo; cấp quyền động cho tất cả nhân viên |
 
 ---
 
-### 2.2 Persona B — Nhân viên vận hành (Warehouse Staff)
+### 2.2 Persona 2 — Giám đốc
 
 | Thuộc tính | Chi tiết |
 |---|---|
-| **Vai trò thực tế** | Nhân viên kho — bốc xếp, kiểm nhận hàng, soạn hàng |
-| **Mục tiêu chính** | Thực hiện nhanh các lệnh nhập/xuất/điều chuyển, tra cứu vị trí hàng hóa, không sai sót |
-| **Nỗi đau hiện tại** | Tốn thời gian đi tìm hàng trong kho lớn, ghi chép thủ công dễ nhầm, không biết vị trí nào còn trống |
-| **Thiết bị sử dụng** | Điện thoại di động (camera QR), tablet gắn kệ |
-| **Mức độ tech** | Cơ bản — chỉ cần thao tác đơn giản, màn hình rõ ràng |
-
-**Quyền hạn giới hạn của Staff:**
-- Xem danh sách sản phẩm và tồn kho (read-only).
-- Sử dụng màn hình QR Scanner để thực hiện giao dịch nhập/xuất/điều chuyển.
-- Xem lịch sử giao dịch của **chính mình** trong ngày.
-- Xem bản đồ kho 3D (read-only) — không thể sửa vị trí.
-- **Không thể:** xem log của người khác, xóa dữ liệu, quản lý user, quản lý cấu hình hệ thống.
+| **Vai trò thực tế** | Lãnh đạo cấp cao của doanh nghiệp |
+| **Mục tiêu chính** | Nắm tổng quan tình trạng kho, phê duyệt các phiếu quan trọng, xem báo cáo để ra quyết định kinh doanh |
+| **Thiết bị sử dụng** | Desktop / Laptop / Tablet |
+| **Quyền hạn cố định** | Toàn quyền hệ thống tương đương Admin; phê duyệt phiếu nhập/xuất; quản lý tất cả nhân viên; xem và export toàn bộ báo cáo |
 
 ---
 
-### 2.3 Authorization Matrix (Ma trận phân quyền)
+### 2.3 Persona 3 — Phó Giám đốc
 
-| Tính năng / Resource | Admin | Staff |
-|---|:---:|:---:|
-| Xem Dashboard tổng quan | ✅ | ✅ (giới hạn) |
-| Quản lý User (CRUD) | ✅ | ❌ |
-| Quản lý Product (CRUD) | ✅ | ❌ |
-| Xem danh sách Product | ✅ | ✅ |
-| Quản lý Location (CRUD) | ✅ | ❌ |
-| Xem bản đồ kho 3D | ✅ | ✅ |
-| Nhập kho (QR / Manual) | ✅ | ✅ |
-| Xuất kho (QR / Manual) | ✅ | ✅ |
-| Điều chuyển vị trí | ✅ | ✅ |
-| Xem Audit Log (toàn bộ) | ✅ | ❌ |
-| Xem Audit Log (của mình) | ✅ | ✅ |
-| Export dữ liệu (CSV) | ✅ | ❌ |
-| Cấu hình ngưỡng cảnh báo | ✅ | ❌ |
-| Xem cảnh báo tồn kho | ✅ | ✅ (chỉ xem) |
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Lãnh đạo cấp phó, hỗ trợ Giám đốc điều hành |
+| **Mục tiêu chính** | Xử lý phê duyệt phiếu hằng ngày, giám sát báo cáo vận hành, quản lý nhân sự |
+| **Thiết bị sử dụng** | Desktop / Laptop |
+| **Quyền hạn cố định** | Toàn quyền hệ thống tương đương Admin; phê duyệt phiếu nhập/xuất; quản lý tất cả nhân viên; xem và export toàn bộ báo cáo |
+
+---
+
+### 2.4 Persona 4 — Thủ kho
+
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Người phụ trách kho, chịu trách nhiệm toàn bộ hoạt động nhập/xuất và bố trí hàng hóa |
+| **Mục tiêu chính** | Giám sát nhân viên kho, phê duyệt phiếu, theo dõi sơ đồ và báo cáo kho |
+| **Thiết bị sử dụng** | Laptop / Tablet |
+| **Quyền hạn cố định** | Phê duyệt phiếu nhập/xuất; xem sơ đồ kho; xem báo cáo kho; quản lý và cấp quyền động cho NV kho trong bộ phận; xuất báo cáo kho |
+
+---
+
+### 2.5 Persona 5 — Nhân viên kho
+
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Nhân viên bốc xếp, kiểm nhận, soạn hàng trực tiếp tại kho |
+| **Mục tiêu chính** | Thực hiện nhanh thao tác nhập/xuất bằng QR, không sai sót vị trí |
+| **Thiết bị sử dụng** | Điện thoại di động (camera QR) / Tablet gắn kệ |
+| **Quyền hạn cố định** | Không có quyền mặc định sau khi tạo tài khoản |
+| **Quyền hạn động** (do Thủ kho cấp) | Nhập hàng (tạo phiếu IN); Xuất hàng (tạo phiếu OUT); Xem sơ đồ kho; Xem lịch sử biến động |
+
+---
+
+### 2.6 Persona 6 — Nhân viên văn phòng
+
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Nhân viên hành chính hoặc điều phối đơn hàng, không làm việc trực tiếp tại kho |
+| **Mục tiêu chính** | Tạo phiếu nhập/xuất theo đơn hàng, theo dõi tồn kho để hỗ trợ kinh doanh |
+| **Thiết bị sử dụng** | Desktop / Laptop |
+| **Quyền hạn cố định** | Tạo phiếu nhập hàng; tạo phiếu xuất hàng; xem tồn kho; xem báo cáo vận hành; xem dự báo tồn kho |
+
+---
+
+### 2.7 Persona 7 — Kế toán trưởng
+
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Trưởng bộ phận kế toán, chịu trách nhiệm số liệu tài chính kho |
+| **Mục tiêu chính** | Xem và xuất báo cáo tài chính, quản lý nhân viên kế toán |
+| **Thiết bị sử dụng** | Desktop / Laptop |
+| **Quyền hạn cố định** | Xem toàn bộ báo cáo tài chính; xuất báo cáo (CSV/PDF); quản lý NV kế toán trong bộ phận; cấp quyền động cho NV kế toán |
+
+---
+
+### 2.8 Persona 8 — Kế toán phó
+
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Phó trưởng bộ phận kế toán, hỗ trợ Kế toán trưởng |
+| **Mục tiêu chính** | Xem báo cáo tài chính, quản lý và phân quyền nhân viên kế toán |
+| **Thiết bị sử dụng** | Desktop / Laptop |
+| **Quyền hạn cố định** | Xem toàn bộ báo cáo tài chính (không được xuất file); quản lý NV kế toán trong bộ phận; cấp quyền động cho NV kế toán |
+
+---
+
+### 2.9 Persona 9 — Nhân viên kế toán
+
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Nhân viên kế toán cấp thực thi, làm việc với số liệu kho theo phân công |
+| **Mục tiêu chính** | Truy cập báo cáo và dữ liệu tồn kho được giao phụ trách |
+| **Thiết bị sử dụng** | Desktop / Laptop |
+| **Quyền hạn cố định** | Không có quyền mặc định sau khi tạo tài khoản |
+| **Quyền hạn động** (do Kế toán trưởng hoặc Kế toán phó cấp) | Xem báo cáo theo loại (chỉ định loại cụ thể); Xem tồn kho; Xem lịch sử biến động |
+
+---
+
+### 2.10 Persona 10 — Nhân viên Sale
+
+| Thuộc tính | Chi tiết |
+|---|---|
+| **Vai trò thực tế** | Nhân viên kinh doanh, cần biết tồn kho để tư vấn khách hàng và lập kế hoạch bán hàng |
+| **Mục tiêu chính** | Kiểm tra tồn kho thực tế và xem cảnh báo hàng sắp hết để cam kết đúng với khách hàng |
+| **Thiết bị sử dụng** | Desktop / Laptop / Điện thoại |
+| **Quyền hạn cố định** | Xem danh sách sản phẩm và tồn kho (read-only); xem dự báo tồn kho và cảnh báo hàng sắp hết |
+
+---
+
+### 2.11 Authorization Matrix (Ma trận phân quyền)
+
+> Ghi chú: **(đ)** = quyền động, do cấp trên cấp; **(bộ phận)** = chỉ trong phạm vi bộ phận mình.
+
+| Tính năng / Resource | Admin | GĐ | Phó GĐ | Thủ kho | NV kho | NV VP | KT trưởng | KT phó | NV KT | Sale |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Xem Dashboard tổng quan | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Quản lý User (CRUD) | ✅ | ✅ | ✅ | ✅ (bộ phận) | ❌ | ❌ | ✅ (bộ phận) | ✅ (bộ phận) | ❌ | ❌ |
+| Quản lý Product (CRUD) | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Xem danh sách Product | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ (đ) | ✅ |
+| Quản lý Location (CRUD) | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Xem bản đồ kho | ✅ | ✅ | ✅ | ✅ | ✅ (đ) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Nhập kho (tạo phiếu IN) | ✅ | ✅ | ✅ | ✅ | ✅ (đ) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Xuất kho (tạo phiếu OUT) | ✅ | ✅ | ✅ | ✅ | ✅ (đ) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Phê duyệt phiếu nhập/xuất | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Xem lịch sử biến động (toàn bộ) | ✅ | ✅ | ✅ | ✅ | ✅ (đ) | ❌ | ❌ | ❌ | ✅ (đ) | ❌ |
+| Xem lịch sử biến động (của mình) | ✅ | ✅ | ✅ | ✅ | ✅ (đ) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Xem báo cáo tài chính | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ | ✅ (đ) | ❌ |
+| Xuất báo cáo (CSV/PDF) | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Xem dự báo tồn kho | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| Cấu hình ngưỡng cảnh báo | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Xem cảnh báo tồn kho | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| Cấp quyền động cho cấp dưới | ✅ | ❌ | ❌ | ✅ (NV kho) | ❌ | ❌ | ✅ (NV KT) | ✅ (NV KT) | ❌ | ❌ |
 
 ---
 
