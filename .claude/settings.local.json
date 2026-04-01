@@ -18,7 +18,12 @@
       "Bash(del:*)",
       "Bash(node:*)",
       "Bash(npx tsc:*)",
-      "Bash(find /c/Users/User/OneDrive/Desktop/smart-wms -name .env* -o -name tailwind.config.*)"
+      "Bash(find /c/Users/User/OneDrive/Desktop/smart-wms -name .env* -o -name tailwind.config.*)",
+      "Bash(mkdir -p \"C:/Users/User/OneDrive/Desktop/smart-wms/docs\")",
+      "Bash(mv \"C:/Users/User/OneDrive/Desktop/smart-wms/REQUIREMENTS.md\" \"C:/Users/User/OneDrive/Desktop/smart-wms/docs/REQUIREMENTS.md\")",
+      "Bash(mv \"C:/Users/User/OneDrive/Desktop/smart-wms/SPECIFICATION.md\" \"C:/Users/User/OneDrive/Desktop/smart-wms/docs/SPECIFICATION.md\")",
+      "Bash(mv \"C:/Users/User/OneDrive/Desktop/smart-wms/TECHNICAL-DESIGN.md\" \"C:/Users/User/OneDrive/Desktop/smart-wms/docs/TECHNICAL-DESIGN.md\")",
+      "Bash(mv \"C:/Users/User/OneDrive/Desktop/smart-wms/MODULE-STRUCTURE.md\" \"C:/Users/User/OneDrive/Desktop/smart-wms/docs/MODULE-STRUCTURE.md\")"
     ]
   }
 }
