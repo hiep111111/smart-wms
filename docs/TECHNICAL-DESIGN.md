@@ -1,27 +1,27 @@
 # TECHNICAL DESIGN — Smart WMS
 
-> Tài liệu kỹ thuật cho team phát triển. Đọc sau REQUIREMENTS.md và SPECIFICATION.md.
+> Technical document for the development team. Read after REQUIREMENTS.md and SPECIFICATION.md.
 > Stack: Next.js 15 App Router · Tailwind CSS v4 · Prisma ORM · SQLite · Jose JWT
-> Team size: 1–2 người · Timeline: ngắn · Ưu tiên: đơn giản, dễ maintain
+> Team size: 1–2 people · Timeline: short · Priority: simple, easy to maintain
 
 ---
 
-## PHẦN 1 — TECH STACK
+## PART 1 — TECH STACK
 
-### 1.1 Stack Cốt Lõi (Giữ Nguyên)
+### 1.1 Core Stack (Fixed)
 
-| Công nghệ | Version | Lý do |
+| Technology | Version | Reason |
 |-----------|---------|-------|
-| **Next.js** | 15 (App Router) | Server Actions loại bỏ nhu cầu viết API riêng, giảm boilerplate đáng kể. RSC giúp trang load nhanh mà không cần thêm fetching layer. |
-| **React** | 19 | Bundled với Next.js 15, không phải lựa chọn riêng. |
-| **TypeScript** | 5 | Bắt lỗi sớm, Prisma generate types chính xác, IDE support tốt cho team nhỏ. |
-| **Tailwind CSS** | v4 | Utility-first, không cần design system phức tạp. v4 không cần config file. |
-| **Prisma ORM** | 7 | Type-safe queries, auto-generate migration, Prisma Studio để inspect DB trực tiếp. |
-| **SQLite** | via libsql | Zero infrastructure cho v1. Nếu cần scale sau, migrate sang Turso (distributed libSQL) mà không đổi code. |
-| **Jose** | 6 | Thuần JS (không dùng Node crypto API), hoạt động trong Edge Runtime của Next.js middleware. |
-| **bcryptjs** | 3 | Password hashing an toàn, pure JS. |
+| **Next.js** | 15 (App Router) | Server Actions eliminate the need to write separate APIs, significantly reducing boilerplate. RSC enables fast page loads without an additional fetching layer. |
+| **React** | 19 | Bundled with Next.js 15, not a separate choice. |
+| **TypeScript** | 5 | Catches errors early, Prisma generates accurate types, good IDE support for small teams. |
+| **Tailwind CSS** | v4 | Utility-first, no complex design system needed. v4 requires no config file. |
+| **Prisma ORM** | 7 | Type-safe queries, auto-generate migrations, Prisma Studio for direct DB inspection. |
+| **SQLite** | via libsql | Zero infrastructure for v1. If scaling is needed later, migrate to Turso (distributed libSQL) without changing code. |
+| **Jose** | 6 | Pure JS (does not use Node crypto API), works in Next.js middleware Edge Runtime. |
+| **bcryptjs** | 3 | Secure password hashing, pure JS. |
 
-### 1.2 Thư Viện Bổ Sung
+### 1.2 Additional Libraries
 
 #### QR Code
 
@@ -30,10 +30,10 @@ npm install html5-qrcode qrcode
 npm install --save-dev @types/qrcode
 ```
 
-| Thư viện | Mục đích | Lý do chọn |
+| Library | Purpose | Why chosen |
 |----------|----------|-----------|
-| `html5-qrcode` | Scan QR qua camera / upload ảnh | API đơn giản, hỗ trợ cả mobile camera và desktop upload. Không cần WebAssembly setup. |
-| `qrcode` | Generate QR image để in | Zero deps, output SVG/PNG/DataURL. Dùng cho trang in QR sản phẩm & vị trí. |
+| `html5-qrcode` | Scan QR via camera / image upload | Simple API, supports both mobile camera and desktop upload. No WebAssembly setup required. |
+| `qrcode` | Generate QR image for printing | Zero deps, outputs SVG/PNG/DataURL. Used for product and location QR print pages. |
 
 #### 3D Warehouse Map
 
@@ -42,13 +42,13 @@ npm install three @react-three/fiber @react-three/drei
 npm install --save-dev @types/three
 ```
 
-| Thư viện | Mục đích | Lý do chọn |
+| Library | Purpose | Why chosen |
 |----------|----------|-----------|
-| `three` | WebGL rendering engine | Tiêu chuẩn cho 3D web. |
-| `@react-three/fiber` | React wrapper cho Three.js | Viết 3D components như React components thông thường, không phải thao tác Three.js imperative. |
-| `@react-three/drei` | Helper components | OrbitControls, Text, Html overlays — tránh viết từ đầu. |
+| `three` | WebGL rendering engine | The standard for 3D on the web. |
+| `@react-three/fiber` | React wrapper for Three.js | Write 3D components like regular React components, instead of imperative Three.js manipulation. |
+| `@react-three/drei` | Helper components | OrbitControls, Text, Html overlays — avoids writing from scratch. |
 
-> **Lưu ý:** Dùng `dynamic import` với `{ ssr: false }` cho toàn bộ 3D scene để tránh SSR crash.
+> **Note:** Use `dynamic import` with `{ ssr: false }` for the entire 3D scene to prevent SSR crashes.
 
 #### Charts & Analytics
 
@@ -56,23 +56,23 @@ npm install --save-dev @types/three
 npm install recharts
 ```
 
-| Thư viện | Mục đích | Lý do chọn |
+| Library | Purpose | Why chosen |
 |----------|----------|-----------|
-| `recharts` | Bar, Line, Pie charts cho dashboard | React-native (không dùng D3 DOM), TypeScript support tốt, responsive mặc định. Nhẹ hơn Chart.js với React. |
+| `recharts` | Bar, Line, Pie charts for dashboard | React-native (does not use D3 DOM), good TypeScript support, responsive by default. Lighter than Chart.js with React. |
 
-#### Export & Tiện Ích
+#### Export & Utilities
 
 ```
 npm install xlsx date-fns sonner
 ```
 
-| Thư viện | Mục đích | Lý do chọn |
+| Library | Purpose | Why chosen |
 |----------|----------|-----------|
-| `xlsx` | Export báo cáo ra Excel/CSV | Library chuẩn cho Excel export, xử lý được cả CSV. |
-| `date-fns` | Format ngày tháng | Tree-shakeable, không global state như moment.js. Tiếng Việt locale có sẵn. |
-| `sonner` | Toast notifications | Minimal, đẹp mặc định, tích hợp với Next.js App Router không cần Provider phức tạp. |
+| `xlsx` | Export reports to Excel/CSV | Standard library for Excel export, also handles CSV. |
+| `date-fns` | Date formatting | Tree-shakeable, no global state like moment.js. Vietnamese locale available. |
+| `sonner` | Toast notifications | Minimal, beautiful by default, integrates with Next.js App Router without a complex Provider. |
 
-### 1.3 Tổng Hợp dependencies
+### 1.3 Dependencies Summary
 
 ```json
 {
@@ -100,16 +100,16 @@ npm install xlsx date-fns sonner
 
 ---
 
-## PHẦN 2 — ARCHITECTURE
+## PART 2 — ARCHITECTURE
 
-### 2.1 Tổng Quan Luồng Dữ Liệu
+### 2.1 Data Flow Overview
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    BROWSER (Client)                      │
 │                                                         │
 │  React Components (RSC + Client Components)             │
-│  ├── Server Components: render trực tiếp từ DB          │
+│  ├── Server Components: render directly from DB         │
 │  └── Client Components: interactive UI, 3D map, QR      │
 └───────────────┬─────────────────────────────────────────┘
                 │  HTTP (Server Actions / fetch)
@@ -139,52 +139,52 @@ npm install xlsx date-fns sonner
                     └──────────────┘
 ```
 
-**Quy tắc chọn Server Action vs Route Handler:**
-- **Server Action**: CRUD operations (form submit, mutations) — đơn giản, type-safe, không cần fetch()
-- **Route Handler (`app/api/`)**: chỉ dùng khi cần streaming (QR scan real-time) hoặc webhook từ ngoài
+**Rule for choosing Server Action vs Route Handler:**
+- **Server Action**: CRUD operations (form submit, mutations) — simple, type-safe, no fetch() needed
+- **Route Handler (`app/api/`)**: only use when streaming is needed (QR scan real-time) or for external webhooks
 
 ### 2.2 API Structure
 
-Nhóm theo domain. Tất cả đều được gọi qua Server Actions trừ trường hợp ghi chú riêng.
+Grouped by domain. All are called via Server Actions unless noted otherwise.
 
 ```
 src/actions/
 │
 ├── auth/
-│   ├── login.ts          — POST: xác thực, set JWT cookie
-│   └── logout.ts         — POST: xoá cookie, redirect /login
+│   ├── login.ts          — POST: authenticate, set JWT cookie
+│   └── logout.ts         — POST: clear cookie, redirect /login
 │
 ├── users/
-│   ├── getUsers.ts       — GET: danh sách users (Admin only)
-│   ├── createUser.ts     — POST: tạo user
-│   ├── updateUser.ts     — PUT: cập nhật role, isActive
+│   ├── getUsers.ts       — GET: user list (Admin only)
+│   ├── createUser.ts     — POST: create user
+│   ├── updateUser.ts     — PUT: update role, isActive
 │   ├── deleteUser.ts     — DELETE: soft delete
 │   └── updatePermissions.ts — PUT: dynamic permissions
 │
 ├── products/
 │   ├── getProducts.ts    — GET: list + search/filter
-│   ├── getProduct.ts     — GET: chi tiết + tồn kho theo vị trí
-│   ├── createProduct.ts  — POST: tạo sản phẩm + validate SKU unique
-│   ├── updateProduct.ts  — PUT: cập nhật thông tin
-│   └── deleteProduct.ts  — DELETE: kiểm tra tồn kho > 0 trước khi xoá
+│   ├── getProduct.ts     — GET: detail + stock by location
+│   ├── createProduct.ts  — POST: create product + validate SKU unique
+│   ├── updateProduct.ts  — PUT: update information
+│   └── deleteProduct.ts  — DELETE: check stock > 0 before deleting
 │
 ├── locations/
-│   ├── getLocations.ts   — GET: danh sách + filter by status
-│   ├── getLocation.ts    — GET: chi tiết + inventory hiện tại
-│   ├── createLocation.ts — POST: tạo vị trí + validate toạ độ unique
-│   ├── updateLocation.ts — PUT: cập nhật label/status
-│   └── deleteLocation.ts — DELETE: kiểm tra còn hàng không
+│   ├── getLocations.ts   — GET: list + filter by status
+│   ├── getLocation.ts    — GET: detail + current inventory
+│   ├── createLocation.ts — POST: create location + validate coordinates unique
+│   ├── updateLocation.ts — PUT: update label/status
+│   └── deleteLocation.ts — DELETE: check if stock remains
 │
 ├── inventory/
-│   ├── createInbound.ts  — POST: Nhập kho (IN)
-│   ├── createOutbound.ts — POST: Xuất kho (OUT), validate quantity
-│   ├── createTransfer.ts — POST: Chuyển vị trí (TRANSFER), atomic
-│   └── getMovements.ts   — GET: lịch sử + filter by type/date/product
+│   ├── createInbound.ts  — POST: Goods Receipt (IN)
+│   ├── createOutbound.ts — POST: Goods Issue (OUT), validate quantity
+│   ├── createTransfer.ts — POST: Location Transfer (TRANSFER), atomic
+│   └── getMovements.ts   — GET: history + filter by type/date/product
 │
 ├── reports/
-│   ├── getDashboardStats.ts — GET: KPI cards, tổng tồn kho
-│   ├── getStockReport.ts    — GET: báo cáo tồn kho chi tiết
-│   ├── getMovementReport.ts — GET: báo cáo nhập/xuất theo kỳ
+│   ├── getDashboardStats.ts — GET: KPI cards, total stock
+│   ├── getStockReport.ts    — GET: detailed stock report
+│   ├── getMovementReport.ts — GET: receipt/issue report by period
 │   └── exportReport.ts      — POST: generate xlsx buffer → download
 │
 └── scanner/
@@ -194,19 +194,19 @@ src/actions/
 ### 2.3 Authentication Flow
 
 ```
-[1] User nhập username + password
+[1] User enters username + password
         │
         ▼
 [2] Server Action: login.ts
-    ├── Prisma: tìm user theo username
+    ├── Prisma: find user by username
     ├── bcryptjs: compare password hash
-    └── Nếu fail → trả về error message
+    └── If fail → return error message
 
-        │ (nếu thành công)
+        │ (if successful)
         ▼
-[3] Jose: ký JWT (HS256)
+[3] Jose: sign JWT (HS256)
     Payload: { userId, username, role, permissions[] }
-    Expires: 8 giờ
+    Expires: 8 hours
         │
         ▼
 [4] Set HTTP-only cookie: wms_session=<jwt>
@@ -215,14 +215,14 @@ src/actions/
         ▼
 [5] Redirect → /dashboard
 
-[6] Mỗi request tiếp theo:
+[6] Each subsequent request:
         │
         ▼
     middleware.ts
-    ├── Đọc cookie wms_session
+    ├── Read cookie wms_session
     ├── Jose: verify + decrypt JWT
-    ├── Inject user info vào request headers
-    └── Nếu invalid/expired → redirect /login
+    ├── Inject user info into request headers
+    └── If invalid/expired → redirect /login
 
 [7] Logout:
     logout.ts → delete cookie → redirect /login
@@ -230,33 +230,33 @@ src/actions/
 
 ### 2.4 Middleware & RBAC
 
-**2 lớp bảo vệ:**
+**2 protection layers:**
 
 ```
-LỚP 1 — ROUTE LEVEL (middleware.ts)
+LAYER 1 — ROUTE LEVEL (middleware.ts)
 ─────────────────────────────────────
-Kiểm tra: có JWT hợp lệ không?
-- Không có / hết hạn → /login
-- Có → inject { userId, role, permissions } vào header x-user-info
+Check: is there a valid JWT?
+- Missing / expired → /login
+- Valid → inject { userId, role, permissions } into header x-user-info
 
-Áp dụng cho: tất cả /dashboard/** routes
-Không áp dụng cho: /login, /api/*, /_next/*, /favicon.ico
+Applies to: all /dashboard/** routes
+Does not apply to: /login, /api/*, /_next/*, /favicon.ico
 
 
-LỚP 2 — ACTION LEVEL (mỗi Server Action)
+LAYER 2 — ACTION LEVEL (each Server Action)
 ─────────────────────────────────────────
-Kiểm tra: role có quyền thực hiện action này không?
+Check: does the role have permission to perform this action?
 
 src/lib/auth/checkPermission.ts
-  └── getSession() → đọc header x-user-info
+  └── getSession() → read header x-user-info
   └── hasPermission(session, requiredPermission) → boolean
-  └── Nếu không có quyền → throw Error("UNAUTHORIZED")
+  └── If no permission → throw Error("UNAUTHORIZED")
 ```
 
-**Permission check pattern trong mọi Server Action:**
+**Permission check pattern in every Server Action:**
 
 ```typescript
-// Mẫu chuẩn cho mọi Server Action cần auth
+// Standard pattern for every Server Action requiring auth
 export async function createProduct(data: CreateProductInput) {
   const session = await getSession()
   if (!hasPermission(session, 'product:create')) {
@@ -266,7 +266,7 @@ export async function createProduct(data: CreateProductInput) {
 }
 ```
 
-**Permission Map (rút gọn từ SPECIFICATION.md):**
+**Permission Map (condensed from SPECIFICATION.md):**
 
 ```
 product:create    → Admin, Director, Vice Director, Head Warehouse, Warehouse Staff*
@@ -284,22 +284,22 @@ report:view       → Admin, Director, Vice Director, Head Warehouse, Chief Acco
 report:export     → Admin, Director, Vice Director, Chief Accountant, Vice Accountant
 
 user:manage       → Admin only
-permission:grant  → Admin, Head Warehouse (cho Warehouse Staff), Chief/Vice Accountant (cho Accounting Staff)
+permission:grant  → Admin, Head Warehouse (for Warehouse Staff), Chief/Vice Accountant (for Accounting Staff)
 
-* = nếu được cấp dynamic permission
+* = if granted dynamic permission
 ```
 
 ---
 
-## PHẦN 3 — MODULE STRUCTURE
+## PART 3 — MODULE STRUCTURE
 
-### 3.1 Sơ Đồ Dependency
+### 3.1 Dependency Diagram
 
 ```
            ┌──────────┐
            │  shared  │  (UI components, hooks, utils)
            └────┬─────┘
-                │ (tất cả modules đều dùng)
+                │ (used by all modules)
     ┌───────────┼──────────────────────────┐
     │           │                          │
     ▼           ▼                          ▼
@@ -324,26 +324,26 @@ permission:grant  → Admin, Head Warehouse (cho Warehouse Staff), Chief/Vice Ac
             └─────────┘
 ```
 
-### 3.2 Chi Tiết Từng Module
+### 3.2 Module Details
 
 ---
 
 #### MODULE: `auth`
-**Chức năng:** Xác thực người dùng, quản lý session JWT, kiểm tra quyền
+**Function:** User authentication, JWT session management, permission checks
 
 ```
 src/
 ├── app/(auth)/
-│   ├── layout.tsx              — Layout trang login (không có sidebar)
+│   ├── layout.tsx              — Login page layout (no sidebar)
 │   └── login/
-│       └── page.tsx            — Trang đăng nhập
+│       └── page.tsx            — Login page
 ├── actions/auth/
-│   ├── login.ts                — Server Action: xác thực, set cookie
-│   └── logout.ts               — Server Action: xoá cookie
+│   ├── login.ts                — Server Action: authenticate, set cookie
+│   └── logout.ts               — Server Action: clear cookie
 └── lib/auth/
     ├── session.ts              — getSession(), createSession(), deleteSession()
     ├── permissions.ts          — hasPermission(), PERMISSION_MAP constant
-    └── checkPermission.ts      — Guard function dùng trong Server Actions
+    └── checkPermission.ts      — Guard function used in Server Actions
 ```
 
 **Dependencies:** `jose`, `bcryptjs`, Prisma `User` model
@@ -351,16 +351,16 @@ src/
 ---
 
 #### MODULE: `users`
-**Chức năng:** Quản lý tài khoản người dùng, phân quyền động
+**Function:** User account management, dynamic permission assignment
 
 ```
 src/
 ├── app/dashboard/users/
-│   ├── page.tsx                — Danh sách users (table + search)
+│   ├── page.tsx                — User list (table + search)
 │   ├── new/
-│   │   └── page.tsx            — Form tạo user mới
+│   │   └── page.tsx            — Create new user form
 │   └── [id]/
-│       └── page.tsx            — Chi tiết + form chỉnh sửa + cấp quyền động
+│       └── page.tsx            — Detail + edit form + dynamic permission grant
 ├── actions/users/
 │   ├── getUsers.ts
 │   ├── createUser.ts
@@ -370,7 +370,7 @@ src/
 └── components/users/
     ├── UserTable.tsx
     ├── UserForm.tsx
-    └── PermissionEditor.tsx    — UI cấp quyền động
+    └── PermissionEditor.tsx    — Dynamic permission grant UI
 ```
 
 **Dependencies:** `auth` module (session + permission check), Prisma `User` model
@@ -378,16 +378,16 @@ src/
 ---
 
 #### MODULE: `products`
-**Chức năng:** CRUD sản phẩm, xem tồn kho theo vị trí, generate QR
+**Function:** Product CRUD, view stock by location, generate QR codes
 
 ```
 src/
 ├── app/dashboard/products/
-│   ├── page.tsx                — Danh sách sản phẩm (table, search, filter category)
+│   ├── page.tsx                — Product list (table, search, category filter)
 │   ├── new/
-│   │   └── page.tsx            — Form tạo sản phẩm
+│   │   └── page.tsx            — Create product form
 │   └── [id]/
-│       └── page.tsx            — Chi tiết: info + tồn kho theo vị trí + lịch sử
+│       └── page.tsx            — Detail: info + stock by location + history
 ├── actions/products/
 │   ├── getProducts.ts
 │   ├── getProduct.ts
@@ -397,8 +397,8 @@ src/
 └── components/products/
     ├── ProductTable.tsx
     ├── ProductForm.tsx
-    ├── StockByLocation.tsx     — Bảng tồn kho phân theo vị trí
-    └── ProductQRCode.tsx       — Generate + hiển thị QR (dùng `qrcode`)
+    ├── StockByLocation.tsx     — Stock breakdown table by location
+    └── ProductQRCode.tsx       — Generate + display QR (using `qrcode`)
 ```
 
 **Dependencies:** `auth`, `qrcode`, Prisma `Product` + `Inventory` models
@@ -406,16 +406,16 @@ src/
 ---
 
 #### MODULE: `locations`
-**Chức năng:** CRUD vị trí kho, quản lý toạ độ 3D, xem hàng trong vị trí
+**Function:** Warehouse location CRUD, 3D coordinate management, view stock at location
 
 ```
 src/
 ├── app/dashboard/locations/
-│   ├── page.tsx                — Danh sách vị trí (table + filter by status)
+│   ├── page.tsx                — Location list (table + filter by status)
 │   ├── new/
-│   │   └── page.tsx            — Form tạo vị trí (label, x, y, z, status)
+│   │   └── page.tsx            — Create location form (label, x, y, z, status)
 │   └── [id]/
-│       └── page.tsx            — Chi tiết: inventory + QR code vị trí
+│       └── page.tsx            — Detail: inventory + location QR code
 ├── actions/locations/
 │   ├── getLocations.ts
 │   ├── getLocation.ts
@@ -425,7 +425,7 @@ src/
 └── components/locations/
     ├── LocationTable.tsx
     ├── LocationForm.tsx
-    ├── LocationInventory.tsx   — Danh sách sản phẩm đang ở vị trí này
+    ├── LocationInventory.tsx   — List of products currently at this location
     └── LocationQRCode.tsx
 ```
 
@@ -434,81 +434,81 @@ src/
 ---
 
 #### MODULE: `inventory`
-**Chức năng:** Nhập kho (IN), Xuất kho (OUT), Chuyển vị trí (TRANSFER), lịch sử
+**Function:** Goods Receipt (IN), Goods Issue (OUT), Location Transfer (TRANSFER), history
 
 ```
 src/
 ├── app/dashboard/
 │   ├── scanner/
-│   │   └── page.tsx            — QR scan → auto-fill form nhập/xuất
+│   │   └── page.tsx            — QR scan → auto-fill receipt/issue form
 │   └── movements/
-│       └── page.tsx            — Lịch sử giao dịch (filter by type/date/product)
+│       └── page.tsx            — Transaction history (filter by type/date/product)
 ├── actions/inventory/
-│   ├── createInbound.ts        — Nhập kho: tăng Inventory, ghi StockMovement
-│   ├── createOutbound.ts       — Xuất kho: validate quantity, giảm Inventory
-│   ├── createTransfer.ts       — Chuyển: atomic decrease + increase
-│   └── getMovements.ts         — Lịch sử có pagination
+│   ├── createInbound.ts        — Goods Receipt: increase Inventory, write StockMovement
+│   ├── createOutbound.ts       — Goods Issue: validate quantity, decrease Inventory
+│   ├── createTransfer.ts       — Transfer: atomic decrease + increase
+│   └── getMovements.ts         — History with pagination
 └── components/inventory/
-    ├── InboundForm.tsx          — Form nhập kho
-    ├── OutboundForm.tsx         — Form xuất kho (hiện số lượng tồn)
-    ├── TransferForm.tsx         — Form chuyển vị trí
-    ├── MovementTable.tsx        — Bảng lịch sử
-    └── QRScanner.tsx           — Camera scanner (dùng `html5-qrcode`, client-only)
+    ├── InboundForm.tsx          — Goods receipt form
+    ├── OutboundForm.tsx         — Goods issue form (shows current stock)
+    ├── TransferForm.tsx         — Location transfer form
+    ├── MovementTable.tsx        — History table
+    └── QRScanner.tsx           — Camera scanner (using `html5-qrcode`, client-only)
 ```
 
 **Dependencies:** `auth`, `products`, `locations`, `html5-qrcode`, Prisma `Inventory` + `StockMovement` models
 
-**Lưu ý quan trọng:** `createTransfer` dùng Prisma `$transaction()` để đảm bảo atomicity.
+**Important note:** `createTransfer` uses Prisma `$transaction()` to ensure atomicity.
 
 ---
 
 #### MODULE: `map`
-**Chức năng:** Visualize kho 3D, xem trạng thái từng vị trí real-time
+**Function:** Visualize warehouse in 3D, view real-time status of each location
 
 ```
 src/
 ├── app/dashboard/map/
-│   └── page.tsx                — Trang bản đồ (load 3D scene)
+│   └── page.tsx                — Map page (load 3D scene)
 ├── actions/kho/
-│   └── getLocations.ts         — Đã có: lấy tất cả locations + status + tồn kho
+│   └── getLocations.ts         — Already exists: fetch all locations + status + stock
 └── components/kho/
-    ├── WarehouseMap.tsx         — Đã có: wrapper với dynamic import
+    ├── WarehouseMap.tsx         — Already exists: wrapper with dynamic import
     ├── WarehouseScene.tsx       — Three.js scene (OrbitControls, lighting)
-    ├── LocationBlock.tsx        — Một ô vị trí (màu theo status)
-    └── LocationTooltip.tsx     — Popup khi hover: label, hàng, số lượng
+    ├── LocationBlock.tsx        — A single location cell (color by status)
+    └── LocationTooltip.tsx     — Hover popup: label, goods, quantity
 ```
 
 **Dependencies:** `three`, `@react-three/fiber`, `@react-three/drei`, `locations` module
 
-**Lưu ý:** Toàn bộ Three.js components phải có `'use client'` và được wrap bởi `dynamic(() => import(...), { ssr: false })`.
+**Note:** All Three.js components must have `'use client'` and be wrapped with `dynamic(() => import(...), { ssr: false })`.
 
 ---
 
 #### MODULE: `reports`
-**Chức năng:** Dashboard KPIs, báo cáo tồn kho, báo cáo nhập xuất, export Excel
+**Function:** Dashboard KPIs, stock reports, receipt/issue reports, Excel export
 
 ```
 src/
 ├── app/dashboard/
 │   └── page.tsx                — Dashboard (KPI cards + charts)
 ├── actions/reports/
-│   ├── getDashboardStats.ts    — Tổng sản phẩm, tổng vị trí, IN/OUT hôm nay
-│   ├── getStockReport.ts       — Tồn kho theo sản phẩm/category
-│   ├── getMovementReport.ts    — Nhập xuất theo ngày/tuần/tháng
-│   └── exportReport.ts         — Generate xlsx → trả về Buffer
+│   ├── getDashboardStats.ts    — Total products, total locations, today's IN/OUT
+│   ├── getStockReport.ts       — Stock by product/category
+│   ├── getMovementReport.ts    — Receipt/issue by day/week/month
+│   └── exportReport.ts         — Generate xlsx → return Buffer
 └── components/reports/
-    ├── KPICard.tsx              — Card hiển thị một chỉ số
-    ├── StockBarChart.tsx        — Bar chart tồn kho (recharts)
-    ├── MovementLineChart.tsx    — Line chart xu hướng nhập xuất
+    ├── KPICard.tsx              — Card displaying a single metric
+    ├── StockBarChart.tsx        — Stock bar chart (recharts)
+    ├── MovementLineChart.tsx    — Receipt/issue trend line chart
     └── ExportButton.tsx         — Trigger export + download
 ```
 
-**Dependencies:** `auth`, `recharts`, `xlsx`, `date-fns`, Prisma queries tổng hợp
+**Dependencies:** `auth`, `recharts`, `xlsx`, `date-fns`, aggregated Prisma queries
 
 ---
 
 #### MODULE: `shared`
-**Chức năng:** UI components dùng chung, hooks, utilities
+**Function:** Shared UI components, hooks, utilities
 
 ```
 src/
@@ -518,28 +518,28 @@ src/
 │   ├── Select.tsx
 │   ├── Table.tsx
 │   ├── Modal.tsx
-│   ├── Badge.tsx               — Hiển thị status (AVAILABLE/FULL/RESERVED)
-│   ├── Sidebar.tsx             — Navigation sidebar dashboard
-│   ├── PageHeader.tsx          — Tiêu đề trang + breadcrumb
+│   ├── Badge.tsx               — Display status (AVAILABLE/FULL/RESERVED)
+│   ├── Sidebar.tsx             — Dashboard navigation sidebar
+│   ├── PageHeader.tsx          — Page title + breadcrumb
 │   └── LoadingSpinner.tsx
 ├── hooks/
-│   ├── useToast.ts             — Wrapper cho sonner
+│   ├── useToast.ts             — Wrapper for sonner
 │   └── useDebounce.ts          — Search debounce
 └── lib/
     ├── prisma/
-    │   └── db.ts               — Prisma client singleton (đã có)
+    │   └── db.ts               — Prisma client singleton (already exists)
     ├── utils/
-    │   ├── format.ts           — formatDate, formatNumber (dùng date-fns)
+    │   ├── format.ts           — formatDate, formatNumber (using date-fns)
     │   └── cn.ts               — classnames helper (Tailwind merge)
     └── types/
         └── index.ts            — Shared TypeScript types
 ```
 
-**Dependencies:** `sonner`, `date-fns`, không phụ thuộc module khác
+**Dependencies:** `sonner`, `date-fns`, no dependency on other modules
 
 ---
 
-### 3.3 Cấu Trúc File Đầy Đủ
+### 3.3 Full File Structure
 
 ```
 smart-wms/
@@ -556,7 +556,7 @@ smart-wms/
     │   │   ├── layout.tsx
     │   │   └── login/page.tsx
     │   └── dashboard/
-    │       ├── layout.tsx          ← cần tạo (sidebar + nav)
+    │       ├── layout.tsx          ← needs to be created (sidebar + nav)
     │       ├── page.tsx            ← dashboard home
     │       ├── products/...
     │       ├── locations/...
@@ -585,34 +585,34 @@ smart-wms/
     │   ├── utils/
     │   └── types/
     └── generated/
-        └── prisma/             ← auto-generated, không edit tay
+        └── prisma/             ← auto-generated, do not edit manually
 ```
 
-### 3.4 Thứ Tự Build Đề Xuất
+### 3.4 Suggested Build Order
 
-Build theo thứ tự dependency để không bị block:
+Build in dependency order to avoid being blocked:
 
 ```
 Sprint 1: shared + auth
-  → UI components cơ bản (Button, Input, Table, Sidebar)
-  → Login page hoàn chỉnh
-  → Dashboard layout với navigation
+  → Basic UI components (Button, Input, Table, Sidebar)
+  → Complete login page
+  → Dashboard layout with navigation
 
 Sprint 2: products + locations
-  → CRUD sản phẩm (không cần tồn kho)
-  → CRUD vị trí
+  → Product CRUD (no inventory yet)
+  → Location CRUD
   → QR generation
 
 Sprint 3: inventory
-  → Form nhập kho (IN)
-  → Form xuất kho (OUT) với validation
-  → Lịch sử giao dịch
+  → Goods Receipt form (IN)
+  → Goods Issue form (OUT) with validation
+  → Transaction history
   → QR Scanner integration
 
 Sprint 4: map + reports
   → 3D Warehouse Map
   → Dashboard KPIs + charts
-  → Export Excel
+  → Excel Export
 
 Sprint 5: users + permissions
   → User management (Admin only)
