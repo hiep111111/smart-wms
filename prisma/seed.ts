@@ -16,31 +16,46 @@ async function main() {
   await prisma.product.deleteMany();
   await prisma.user.deleteMany();
 
-  // 1. Admin user
+  // 1. Users
   const passwordHash = await bcrypt.hash("admin123", 10);
-  await prisma.user.upsert({
-    where: { username: "admin" },
-    update: { passwordHash },
-    create: {
-      username: "admin",
-      passwordHash,
-      role: "ADMIN",
-    },
-  });
-  console.log("✓ User: admin");
 
-  // 2. 100 Locations — X(1-5) × Y(1-10) × Z(1-2)
+  await prisma.user.createMany({
+    data: [
+      {
+        username: "admin",
+        passwordHash,
+        role: "ADMIN",
+        isActive: true,
+        permissions: "[]",
+      },
+      {
+        username: "manager",
+        passwordHash,
+        role: "WAREHOUSE_MANAGER",
+        isActive: true,
+        permissions: "[]",
+      },
+      {
+        username: "staff",
+        passwordHash,
+        role: "WAREHOUSE_STAFF",
+        isActive: true,
+        permissions: JSON.stringify(["STOCK_IN", "STOCK_OUT", "VIEW_WAREHOUSE_MAP", "VIEW_MOVEMENT_HISTORY"]),
+      },
+    ],
+  });
+  console.log("✓ Users: admin, manager, staff");
+
+  // 2. 10 Locations — 2 rows (X) × 5 columns (Y), single level (Z=1)
   const locationData: { label: string; x: number; y: number; z: number }[] = [];
-  for (let x = 1; x <= 5; x++) {
-    for (let y = 1; y <= 10; y++) {
-      for (let z = 1; z <= 2; z++) {
-        locationData.push({
-          label: `Khu-A-X${x}-Y${y}-Z${z}`,
-          x,
-          y,
-          z,
-        });
-      }
+  for (let x = 1; x <= 2; x++) {
+    for (let y = 1; y <= 5; y++) {
+      locationData.push({
+        label: `Khu-${x === 1 ? "A" : "B"}-Ke-0${y}-Tang-01`,
+        x,
+        y,
+        z: 1,
+      });
     }
   }
   await prisma.location.createMany({ data: locationData });
@@ -48,11 +63,11 @@ async function main() {
 
   // 3. 5 Products
   const products = [
-    { sku: "IP15-128-BLK", name: "iPhone 15 128GB Black", category: "Điện thoại", unit: "Cái" },
-    { sku: "SS-S24-256-WHT", name: "Samsung Galaxy S24 256GB White", category: "Điện thoại", unit: "Cái" },
-    { sku: "MBA-M3-512", name: "MacBook Air M3 512GB", category: "Laptop", unit: "Chiếc" },
-    { sku: "APS-PRO11-WIFI", name: "iPad Pro 11 Wi-Fi 256GB", category: "Máy tính bảng", unit: "Chiếc" },
-    { sku: "SNY-WH1000XM5", name: "Sony WH-1000XM5 Headphones", category: "Phụ kiện", unit: "Cái" },
+    { sku: "IP15-128-BLK", name: "iPhone 15 128GB Black", category: "Điện thoại", unit: "Cái", minQuantity: 5 },
+    { sku: "SS-S24-256-WHT", name: "Samsung Galaxy S24 256GB White", category: "Điện thoại", unit: "Cái", minQuantity: 5 },
+    { sku: "MBA-M3-512", name: "MacBook Air M3 512GB", category: "Laptop", unit: "Chiếc", minQuantity: 3 },
+    { sku: "APS-PRO11-WIFI", name: "iPad Pro 11 Wi-Fi 256GB", category: "Máy tính bảng", unit: "Chiếc", minQuantity: 3 },
+    { sku: "SNY-WH1000XM5", name: "Sony WH-1000XM5 Headphones", category: "Phụ kiện", unit: "Cái", minQuantity: 10 },
   ];
 
   for (const p of products) {
@@ -64,12 +79,12 @@ async function main() {
   }
   console.log(`✓ Products: ${products.length} sản phẩm`);
 
-  // 4. Seed Inventory — gán mỗi sản phẩm vào 3 location cố định
-  const allLocations = await prisma.location.findMany({ take: 15, orderBy: { label: "asc" } });
+  // 4. Seed Inventory — assign each product to 2 locations
+  const allLocations = await prisma.location.findMany({ orderBy: { label: "asc" } });
   const allProducts = await prisma.product.findMany();
 
   const inventoryData = allProducts.flatMap((product, pi) => {
-    const locs = allLocations.slice(pi * 3, pi * 3 + 3);
+    const locs = allLocations.slice(pi * 2, pi * 2 + 2);
     return locs.map((loc) => ({
       productId: product.id,
       locationId: loc.id,

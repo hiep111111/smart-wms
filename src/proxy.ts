@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "@/lib/auth/session";
+import { verifyToken, COOKIE_NAME } from "@/lib/auth";
 
 const PUBLIC_ROUTES = ["/login"];
-const COOKIE_NAME = "wms_session";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname === "/") {
@@ -22,12 +21,17 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    const session = await decrypt(token);
+    const session = await verifyToken(token);
     if (!session) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    return NextResponse.next();
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-user-id", session.userId);
+    requestHeaders.set("x-user-role", session.role);
+    requestHeaders.set("x-user-permissions", JSON.stringify(session.permissions));
+
+    return NextResponse.next({ request: { headers: requestHeaders } });
   }
 
   return NextResponse.next();
