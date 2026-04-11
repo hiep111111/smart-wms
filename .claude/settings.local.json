@@ -42,7 +42,11 @@
       "Read(//tmp/**)",
       "Bash(taskkill /PID 6668 /F)",
       "Bash(cmd //c \"taskkill /PID 6668 /F\")",
-      "Bash(python3 -c ':*)"
+      "Bash(python3 -c ':*)",
+      "Bash(curl -s http://localhost:3000/test-sprint3)",
+      "Bash(mkdir -p src)",
+      "Bash(cp -r app src/app)",
+      "Bash(rm -rf app)"
     ]
   }
 }

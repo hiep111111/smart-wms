@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id                  String          @id @default(uuid())
+  username            String          @unique
+  passwordHash        String
+  role                String
+  isActive            Boolean         @default(true)
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  movementsCreated    StockMovement[] @relation("CreatedMovements")
+  movementsApproved   StockMovement[] @relation("ApprovedMovements")
+  permissionsGranted  Permission[]    @relation("PermissionsGranted")
+  permissionsReceived Permission[]    @relation("PermissionsReceived")
+}
+
+model Product {
+  id          String          @id @default(uuid())
+  sku         String          @unique
+  name        String
+  description String?
+  category    String?
+  unit        String          @default("Cái")
+  minQuantity Int             @default(0)
+  maxQuantity Int?
+  imageUrl    String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  inventories Inventory[]
+  movements   StockMovement[]
+}
+
+model Location {
+  id                    String          @id @default(uuid())
+  label                 String          @unique
+  x                     Int
+  y                     Int
+  z                     Int
+  status                String          @default("AVAILABLE")
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  inventories           Inventory[]
+  movements             StockMovement[] @relation("LocationMovements")
+  transferFromMovements StockMovement[] @relation("FromLocationMovements")
+}
+
+model Inventory {
+  id         String   @id @default(uuid())
+  productId  String
+  locationId String
+  quantity   Int      @default(0)
+  updatedAt  DateTime @updatedAt
+
+  product    Product  @relation(fields: [productId], references: [id])
+  location   Location @relation(fields: [locationId], references: [id])
+
+  @@unique([productId, locationId])
+}
+
+model StockMovement {
+  id             String    @id @default(uuid())
+  type           String
+  quantity       Int
+  productId      String
+  locationId     String
+  fromLocationId String?
+  userId         String
+  voucherStatus  String    @default("PENDING")
+  approvedBy     String?
+  approvedAt     DateTime?
+  note           String?
+  createdAt      DateTime  @default(now())
+
+  product      Product   @relation(fields: [productId], references: [id])
+  location     Location  @relation("LocationMovements", fields: [locationId], references: [id])
+  fromLocation Location? @relation("FromLocationMovements", fields: [fromLocationId], references: [id])
+  user         User      @relation("CreatedMovements", fields: [userId], references: [id])
+  approver     User?     @relation("ApprovedMovements", fields: [approvedBy], references: [id])
+}
+
+model Permission {
+  id            String   @id @default(uuid())
+  grantorId     String
+  granteeId     String
+  permissionKey String
+  grantedAt     DateTime @default(now())
+
+  grantor User @relation("PermissionsGranted", fields: [grantorId], references: [id])
+  grantee User @relation("PermissionsReceived", fields: [granteeId], references: [id])
+
+  @@unique([granteeId, permissionKey])
+}
