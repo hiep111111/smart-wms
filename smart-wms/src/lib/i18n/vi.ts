@@ -2,6 +2,7 @@ export const vi = {
   // Sidebar
   nav: {
     dashboard: "Tổng quan",
+    map: "Bản đồ 3D",
     products: "Sản phẩm",
     locations: "Vị trí",
     transactions: "Giao dịch",
@@ -15,6 +16,7 @@ export const vi = {
     loggingOut: "Đang đăng xuất...",
     theme: "Giao diện",
     language: "Ngôn ngữ",
+    profile: "Hồ sơ cá nhân",
   },
   // Dashboard Metrics
   kpi: {
@@ -127,6 +129,20 @@ export const vi = {
     editPermissions: "Sửa Quyền",
     availablePermissions: "Các quyền có sẵn",
     manageRights: "Cài đặt quyền hạn hệ thống của",
+  },
+  profile: {
+    title: "Hồ sơ người dùng",
+    subtitle: "Quản lý cài đặt thông tin cá nhân.",
+    usernameLocked: "Tên đăng nhập (Bị khóa)",
+    roleLocked: "Vai trò (Bị khóa)",
+    fullName: "Họ và tên",
+    email: "Email",
+    phone: "Số điện thoại",
+    department: "Phòng ban / Bộ phận",
+    fullNamePlaceholder: "Ví dụ: Nguyễn Văn A",
+    emailPlaceholder: "Ví dụ: admin@congty.com",
+    phonePlaceholder: "Ví dụ: 0912345678",
+    departmentPlaceholder: "Ví dụ: Kho Tổng hợp A",
   },
   // Common
   common: {

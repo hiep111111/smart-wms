@@ -153,6 +153,7 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { getStockLocationsForProduct, type StockLocationItem } from "@/actions/inventory/getStockLocationsForProduct";
 import { useSearchParams } from "next/navigation";
 import { hasPermission } from "@/lib/auth/permissions";
+import { QRScanner } from "@/components/inventory/QRScanner";
 
 // ... [existing imports]
 // Note: we can map the tabs dynamically
@@ -181,6 +182,7 @@ export function TransactionForms({
   const [isPending, startTransition] = useTransition();
   const [isFetchingStock, setIsFetchingStock] = useState(false);
   const [sourceLocations, setSourceLocations] = useState<StockLocationItem[]>([]);
+  const [showScanner, setShowScanner] = useState(false);
   
   // Keep track of values properly for controlled/uncontrolled state updates
   const [selectedProductId, setSelectedProductId] = useState("");
@@ -196,8 +198,7 @@ export function TransactionForms({
     return (form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement)?.value ?? "";
   }
 
-  async function handleProductChange(e: React.ChangeEvent<HTMLSelectElement>) {
-    const pid = e.target.value;
+  async function selectProduct(pid: string) {
     setSelectedProductId(pid);
     if (!pid || activeTab === "IN") {
       setSourceLocations([]);
@@ -221,6 +222,42 @@ export function TransactionForms({
     } else {
       setSourceLocations([]);
       if (!urlLocationId) setSelectedSourceId("");
+    }
+  }
+
+  function handleProductChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    selectProduct(e.target.value);
+  }
+
+  function handleScan(text: string) {
+    setShowScanner(false);
+    try {
+      if (text.startsWith("product:")) {
+        const pid = text.replace("product:", "");
+        if (products.some(p => p.id === pid)) {
+          selectProduct(pid);
+          toast.success("Product scanned successfully!");
+        } else {
+          toast.error("Scanned product not found in database.");
+        }
+      } else if (text.startsWith("location:")) {
+        const lid = text.replace("location:", "");
+        if (locations.some(l => l.id === lid)) {
+          if (activeTab === "IN") {
+            const el = formRef.current?.elements.namedItem("locationId") as HTMLSelectElement;
+            if (el) el.value = lid;
+          } else if (activeTab === "OUT" || activeTab === "TRANSFER") {
+            setSelectedSourceId(lid);
+          }
+          toast.success("Location scanned successfully!");
+        } else {
+          toast.error("Scanned location not found in database.");
+        }
+      } else {
+        toast.error("Invalid QR Code FORMAT");
+      }
+    } catch (err) {
+      toast.error("Failed to parse QR Code");
     }
   }
 
@@ -281,6 +318,23 @@ export function TransactionForms({
 
   return (
     <div className="max-w-xl">
+      {/* Scan Button */}
+      <div className="mb-6 flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowScanner(true)}
+          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors"
+        >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
+          </svg>
+          Scan QR Code
+        </button>
+      </div>
+
+      {showScanner && <QRScanner onScan={handleScan} onClose={() => setShowScanner(false)} />}
+
       {/* Tab bar */}
       <div className="flex border-b border-gray-200 mb-6">
         {TABS.map((tab) => {

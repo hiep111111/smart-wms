@@ -4,8 +4,10 @@ import { jwtVerify } from "jose";
 const COOKIE_NAME = "wms_session";
 
 function getEncodedKey(): Uint8Array {
-  const secret =
-    process.env.SESSION_SECRET ?? "fallback-secret-change-in-production";
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) {
+    throw new Error("SESSION_SECRET is not defined");
+  }
   return new TextEncoder().encode(secret);
 }
 

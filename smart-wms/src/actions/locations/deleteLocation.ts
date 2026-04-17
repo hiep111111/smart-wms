@@ -9,7 +9,7 @@ export async function deleteLocation(id: string): Promise<ActionResult> {
   try {
     await requirePermission("locations:manage");
 
-    // Block deletion if the location holds any inventory
+    // Pre-check for clear error messages
     const inventoryCount = await db.inventory.count({
       where: { locationId: id },
     });
@@ -22,7 +22,13 @@ export async function deleteLocation(id: string): Promise<ActionResult> {
       };
     }
 
-    await db.location.delete({ where: { id } });
+    // Atomic delete ensuring there's no inventory
+    await db.location.delete({
+      where: {
+        id,
+        inventory: { none: {} }
+      }
+    });
 
     revalidatePath("/dashboard/locations");
     return { success: true, data: undefined };

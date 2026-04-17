@@ -49,6 +49,9 @@ export async function createInbound(
       });
 
       // Audit record
+      const isApprover = ["ADMIN", "DIRECTOR", "WAREHOUSE_MANAGER"].includes(session.role);
+      const voucherStatus = isApprover ? "APPROVED" : "PENDING";
+
       return tx.stockMovement.create({
         data: {
           type: "IN",
@@ -56,9 +59,9 @@ export async function createInbound(
           productId: input.productId,
           locationId: input.locationId,
           userId: session.userId,
-          voucherStatus: "APPROVED",
-          approvedBy: session.userId,
-          approvedAt: new Date(),
+          voucherStatus,
+          approvedBy: isApprover ? session.userId : null,
+          approvedAt: isApprover ? new Date() : null,
           note: input.note ?? null,
         },
       });

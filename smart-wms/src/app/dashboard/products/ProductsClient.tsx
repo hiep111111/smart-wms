@@ -21,6 +21,21 @@ export function ProductsClient({
   const [deleteProductItem, setDeleteProductItem] = useState<{ id: string; name: string } | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterCat, setFilterCat] = useState("ALL");
+
+  const categories = Array.from(new Set(products.map(p => p.category).filter(Boolean))) as string[];
+
+  const filteredProducts = products.filter(p => {
+    let match = true;
+    if (searchTerm) {
+      const q = searchTerm.toLowerCase();
+      if (!p.name.toLowerCase().includes(q) && !p.sku.toLowerCase().includes(q)) match = false;
+    }
+    if (filterCat !== "ALL" && p.category !== filterCat) match = false;
+    return match;
+  });
+
   const canManage = hasPermission(session, "inventory:manage");
 
   function confirmDelete(id: string, name: string) {
@@ -72,6 +87,34 @@ export function ProductsClient({
         )}
       </div>
 
+      {/* Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-2">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            placeholder="Tìm kiếm Tên SP, SKU..." 
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="pl-9 pr-3 py-2 text-sm w-full sm:w-64 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <select 
+            value={filterCat} 
+            onChange={e => setFilterCat(e.target.value)} 
+            className="text-sm border border-gray-300 rounded p-2 focus:border-blue-500"
+          >
+            <option value="ALL">Tất cả ngành hàng</option>
+            {categories.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+      </div>
+
       {/* Table */}
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-sm">
@@ -97,7 +140,7 @@ export function ProductsClient({
                 </td>
               </tr>
             )}
-            {products.map((p) => (
+            {filteredProducts.map((p) => (
               <tr key={p.id} className="transition-colors hover:bg-gray-50">
                 <td className="px-4 py-3 font-mono text-xs text-gray-700">{p.sku}</td>
                 <td className="px-4 py-3 font-medium text-gray-900">{p.name}</td>
@@ -127,7 +170,7 @@ export function ProductsClient({
           </tbody>
         </table>
         <div className="border-t border-gray-100 px-4 py-2 text-xs text-gray-400">
-          {products.length} {t("products.title").toLowerCase()}
+          Hiển thị {filteredProducts.length} / {products.length} {t("products.title").toLowerCase()}
         </div>
       </div>
     </div>

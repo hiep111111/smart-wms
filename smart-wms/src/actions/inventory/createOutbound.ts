@@ -77,6 +77,9 @@ export async function createOutbound(
         }
       }
 
+      const isApprover = ["ADMIN", "DIRECTOR", "WAREHOUSE_MANAGER"].includes(session.role);
+      const voucherStatus = isApprover ? "APPROVED" : "PENDING";
+
       return tx.stockMovement.create({
         data: {
           type: "OUT",
@@ -84,9 +87,9 @@ export async function createOutbound(
           productId: input.productId,
           locationId: input.locationId,
           userId: session.userId,
-          voucherStatus: "APPROVED",
-          approvedBy: session.userId,
-          approvedAt: new Date(),
+          voucherStatus,
+          approvedBy: isApprover ? session.userId : null,
+          approvedAt: isApprover ? new Date() : null,
           note: input.note ?? null,
         },
       });

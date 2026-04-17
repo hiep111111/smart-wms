@@ -6,8 +6,10 @@ const COOKIE_NAME = "wms_session";
 const SESSION_DURATION_SECONDS = 8 * 60 * 60; // 8 hours
 
 function getEncodedKey(): Uint8Array {
-  const secret =
-    process.env.SESSION_SECRET ?? "fallback-secret-change-in-production";
+  const secret = process.env.SESSION_SECRET;
+  if (!secret) {
+    throw new Error("SESSION_SECRET is not set");
+  }
   return new TextEncoder().encode(secret);
 }
 
@@ -24,7 +26,7 @@ export async function createSession(payload: SessionPayload): Promise<void> {
   cookieStore.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     expires: expiresAt,
     path: "/",
   });

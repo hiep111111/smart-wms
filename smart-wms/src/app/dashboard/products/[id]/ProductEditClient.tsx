@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "sonner";
+import { ProductQRCode } from "@/components/products/ProductQRCode";
 
 export function ProductEditClient({ initialData }: { initialData: any }) {
   const router = useRouter();
@@ -79,13 +80,20 @@ export function ProductEditClient({ initialData }: { initialData: any }) {
         )}
 
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
-          <Input
-            label={`${t("products.sku")} (Read-only)`}
-            name="sku"
-            id="sku"
-            defaultValue={initialData.sku}
-            disabled={true}
-          />
+          <div className="flex gap-4 items-end">
+            <div className="flex-1">
+              <Input
+                label={`${t("products.sku")} (Read-only)`}
+                name="sku"
+                id="sku"
+                defaultValue={initialData.sku}
+                disabled={true}
+              />
+            </div>
+            <div className="shrink-0 pb-1">
+              <ProductQRCode productId={initialData.id} size={80} />
+            </div>
+          </div>
           <Input
             label={`${t("products.name")} *`}
             name="name"

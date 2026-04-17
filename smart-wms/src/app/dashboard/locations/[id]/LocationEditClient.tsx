@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "sonner";
+import { LocationQRCode } from "@/components/locations/LocationQRCode";
 
 export function LocationEditClient({ initialData }: { initialData: any }) {
   const router = useRouter();
@@ -90,14 +91,21 @@ export function LocationEditClient({ initialData }: { initialData: any }) {
         )}
 
         <form onSubmit={onSubmit} className="flex flex-col gap-4">
-          <Input
-            label={`${t("locations.label")} *`}
-            name="label"
-            id="label"
-            required
-            defaultValue={initialData.label}
-            disabled={isPending}
-          />
+          <div className="flex gap-4 items-end">
+            <div className="flex-1">
+              <Input
+                label={`${t("locations.label")} *`}
+                name="label"
+                id="label"
+                required
+                defaultValue={initialData.label}
+                disabled={isPending}
+              />
+            </div>
+            <div className="shrink-0 pb-1">
+              <LocationQRCode locationId={initialData.id} size={80} />
+            </div>
+          </div>
 
           <div className="grid grid-cols-3 gap-4">
             <Input

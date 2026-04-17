@@ -29,6 +29,16 @@ export function LocationsClient({
   const [deleteLabel, setDeleteLabel] = useState("");
   const [isPending, startTransition] = useTransition();
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("ALL");
+
+  const filteredLocations = locations.filter(loc => {
+    let match = true;
+    if (searchTerm && !loc.label.toLowerCase().includes(searchTerm.toLowerCase())) match = false;
+    if (filterStatus !== "ALL" && loc.status !== filterStatus) match = false;
+    return match;
+  });
+
   const canManage = hasPermission(session, "locations:manage");
 
   function triggerDelete(id: string, label: string) {
@@ -80,6 +90,37 @@ export function LocationsClient({
         )}
       </div>
 
+      {/* Filter Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-2">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            placeholder="Tìm mã vị trí..." 
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="pl-9 pr-3 py-2 text-sm w-full sm:w-64 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <select 
+            value={filterStatus} 
+            onChange={e => setFilterStatus(e.target.value)} 
+            className="text-sm border border-gray-300 rounded p-2 focus:border-blue-500"
+          >
+            <option value="ALL">Tất cả trạng thái</option>
+            <option value="AVAILABLE">AVAILABLE (Trống)</option>
+            <option value="FULL">FULL (Đầy)</option>
+            <option value="RESERVED">RESERVED (Đã đặt)</option>
+            <option value="MAINTENANCE">MAINTENANCE (Bảo trì)</option>
+          </select>
+        </div>
+      </div>
+
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
         <table className="w-full text-sm">
           <thead>
@@ -106,7 +147,7 @@ export function LocationsClient({
                 </td>
               </tr>
             )}
-            {locations.map((loc) => {
+            {filteredLocations.map((loc) => {
               const style = STATUS_STYLES[loc.status as keyof typeof STATUS_STYLES] || STATUS_STYLES.DEFAULT;
               let statusLabel = loc.status;
               if (loc.status === "AVAILABLE") statusLabel = t("locations.statusAvailable");
@@ -149,7 +190,7 @@ export function LocationsClient({
           </tbody>
         </table>
         <div className="border-t border-gray-100 px-4 py-2 text-xs text-gray-400">
-          {locations.length} {t("locations.title").toLowerCase()}
+          Hiển thị {filteredLocations.length} / {locations.length} {t("locations.title").toLowerCase()}
         </div>
       </div>
     </div>

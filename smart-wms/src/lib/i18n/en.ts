@@ -2,6 +2,7 @@ export const en = {
   // Sidebar
   nav: {
     dashboard: "Dashboard",
+    map: "3D Map",
     products: "Products",
     locations: "Locations",
     transactions: "Transactions",
@@ -15,6 +16,7 @@ export const en = {
     loggingOut: "Logging out...",
     theme: "Theme",
     language: "Language",
+    profile: "My Profile",
   },
   // Dashboard Metrics
   kpi: {
@@ -127,6 +129,20 @@ export const en = {
     editPermissions: "Edit Permissions",
     availablePermissions: "Available Permissions",
     manageRights: "Manage access rights for",
+  },
+  profile: {
+    title: "User Profile",
+    subtitle: "Manage your personal settings.",
+    usernameLocked: "Username (Locked)",
+    roleLocked: "Role (Locked)",
+    fullName: "Full Name",
+    email: "Email",
+    phone: "Phone",
+    department: "Department",
+    fullNamePlaceholder: "Your full name",
+    emailPlaceholder: "your@email.com",
+    phonePlaceholder: "Phone number",
+    departmentPlaceholder: "e.g. Warehouse A",
   },
   // Common
   common: {
