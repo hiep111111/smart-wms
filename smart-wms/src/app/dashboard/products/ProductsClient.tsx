@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { Pagination } from "@/components/ui/Pagination";
 import { deleteProduct } from "@/actions/products/deleteProduct";
 import type { ProductRow } from "@/actions/products/getProducts";
 
@@ -35,6 +36,25 @@ export function ProductsClient({
     if (filterCat !== "ALL" && p.category !== filterCat) match = false;
     return match;
   });
+
+  const ITEMS_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  // Reset page when filter changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterCatChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterCat(e.target.value);
+    setCurrentPage(1);
+  };
 
   const canManage = hasPermission(session, "inventory:manage");
 
@@ -99,14 +119,14 @@ export function ProductsClient({
             type="text" 
             placeholder="Tìm kiếm Tên SP, SKU..." 
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-9 pr-3 py-2 text-sm w-full sm:w-64 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
           <select 
             value={filterCat} 
-            onChange={e => setFilterCat(e.target.value)} 
+            onChange={handleFilterCatChange} 
             className="text-sm border border-gray-300 rounded p-2 focus:border-blue-500"
           >
             <option value="ALL">Tất cả ngành hàng</option>
@@ -140,8 +160,8 @@ export function ProductsClient({
                 </td>
               </tr>
             )}
-            {filteredProducts.map((p) => (
-              <tr key={p.id} className="transition-colors hover:bg-gray-50">
+            {paginatedProducts.map((p) => (
+              <tr key={p.id} className="transition-colors hover:bg-gray-50 h-14">
                 <td className="px-4 py-3 font-mono text-xs text-gray-700">{p.sku}</td>
                 <td className="px-4 py-3 font-medium text-gray-900">{p.name}</td>
                 <td className="px-4 py-3 text-gray-600">{p.category ?? <span className="text-gray-300">—</span>}</td>
@@ -167,11 +187,23 @@ export function ProductsClient({
                 </td>
               </tr>
             ))}
+            {filteredProducts.length > 0 && Array.from({ length: Math.max(0, ITEMS_PER_PAGE - paginatedProducts.length) }).map((_, i) => (
+              <tr key={`empty-${i}`} className="h-14">
+                <td colSpan={6} className="px-4 py-3 text-transparent">&nbsp;</td>
+              </tr>
+            ))}
           </tbody>
         </table>
-        <div className="border-t border-gray-100 px-4 py-2 text-xs text-gray-400">
-          Hiển thị {filteredProducts.length} / {products.length} {t("products.title").toLowerCase()}
-        </div>
+        {filteredProducts.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredProducts.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            itemName={t("products.title").toLowerCase()}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

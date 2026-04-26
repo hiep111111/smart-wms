@@ -1,0 +1,429 @@
+{
+  "users": [
+    {
+      "id": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "username": "admin",
+      "passwordHash": "$2b$10$kmO782SbBHr5NDYzsJvLWOpcGdNwwdHNL5rs.CUUQDOqjYCo6D1sC",
+      "role": "ADMIN",
+      "isActive": true,
+      "fullName": null,
+      "email": null,
+      "phone": null,
+      "department": null,
+      "createdAt": "2026-04-11T09:54:04.003Z",
+      "updatedAt": "2026-04-11T09:54:04.003Z"
+    },
+    {
+      "id": "790519f0-2f47-4030-83f9-3c39adbe03f5",
+      "username": "quanly",
+      "passwordHash": "$2b$10$9drZOpbNDc5.727k8tFt.O772GtiCpY0APem367JNpHh8Gg8KoFxG",
+      "role": "WAREHOUSE_MANAGER",
+      "isActive": true,
+      "fullName": null,
+      "email": null,
+      "phone": null,
+      "department": null,
+      "createdAt": "2026-04-11T09:54:04.013Z",
+      "updatedAt": "2026-04-11T09:54:04.013Z"
+    },
+    {
+      "id": "69fed8ed-26d5-4a8d-bb6e-b543594a8c29",
+      "username": "thukho",
+      "passwordHash": "$2b$10$E49Ass23rShW/p68BNqmXemcibKJ4dWMtuej8n7FxtaTqGZ8nNz0m",
+      "role": "WAREHOUSE_STAFF",
+      "isActive": true,
+      "fullName": null,
+      "email": null,
+      "phone": null,
+      "department": null,
+      "createdAt": "2026-04-11T09:54:04.018Z",
+      "updatedAt": "2026-04-11T09:54:04.018Z"
+    },
+    {
+      "id": "be762f2f-93e5-4a5d-9fd9-17ef4a0f484a",
+      "username": "ketoan",
+      "passwordHash": "$2b$10$T3urdDu7VfooY.mFQ0LhhOXcAQoC8Omw8fXNOXbe8e2HAVlZZB73q",
+      "role": "CHIEF_ACCOUNTANT",
+      "isActive": true,
+      "fullName": null,
+      "email": null,
+      "phone": null,
+      "department": null,
+      "createdAt": "2026-04-11T09:54:04.023Z",
+      "updatedAt": "2026-04-11T09:54:04.023Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "2e224f48-b0aa-4116-bf40-cc66e768f8b1",
+      "sku": "IP-15-PRM-256",
+      "name": "iPhone 15 Pro Max 256GB",
+      "description": null,
+      "category": "Điện thoại",
+      "unit": "Chiếc",
+      "minQuantity": 10,
+      "maxQuantity": null,
+      "imageUrl": null,
+      "createdAt": "2026-04-11T09:54:04.028Z",
+      "updatedAt": "2026-04-11T09:54:04.028Z"
+    },
+    {
+      "id": "5b3f1b08-1113-4ac3-a73a-b0258f099e34",
+      "sku": "SS-S24-ULT-512",
+      "name": "Samsung Galaxy S24 Ultra 512GB",
+      "description": null,
+      "category": "Điện thoại",
+      "unit": "Chiếc",
+      "minQuantity": 5,
+      "maxQuantity": null,
+      "imageUrl": null,
+      "createdAt": "2026-04-11T09:54:04.033Z",
+      "updatedAt": "2026-04-11T09:54:04.033Z"
+    },
+    {
+      "id": "c2069f66-b545-44ae-be29-9e609a4cd63f",
+      "sku": "MAC-M3-PRO-14",
+      "name": "MacBook Pro 14 inch M3 Pro",
+      "description": null,
+      "category": "Laptop",
+      "unit": "Chiếc",
+      "minQuantity": 3,
+      "maxQuantity": null,
+      "imageUrl": null,
+      "createdAt": "2026-04-11T09:54:04.079Z",
+      "updatedAt": "2026-04-11T09:54:04.079Z"
+    },
+    {
+      "id": "81a1e877-c79f-49bb-8792-7552f9b5a9e7",
+      "sku": "DELL-U2723QE",
+      "name": "Màn hình Dell UltraSharp 27 4K",
+      "description": null,
+      "category": "Màn hình",
+      "unit": "Chiếc",
+      "minQuantity": 5,
+      "maxQuantity": null,
+      "imageUrl": null,
+      "createdAt": "2026-04-11T09:54:04.084Z",
+      "updatedAt": "2026-04-11T09:54:04.084Z"
+    },
+    {
+      "id": "fb12e36f-743f-465b-924f-0a96cf67f187",
+      "sku": "LOGI-MX-MASTER-3S",
+      "name": "Chuột Logitech MX Master 3S",
+      "description": null,
+      "category": "Phụ kiện",
+      "unit": "Cái",
+      "minQuantity": 20,
+      "maxQuantity": null,
+      "imageUrl": null,
+      "createdAt": "2026-04-11T09:54:04.090Z",
+      "updatedAt": "2026-04-11T09:54:04.090Z"
+    },
+    {
+      "id": "5254321e-5a60-4571-b33e-e148dc952e1e",
+      "sku": "KEY-AKKO-3098",
+      "name": "Bàn phím cơ AKKO 3098",
+      "description": null,
+      "category": "Phụ kiện",
+      "unit": "Cái",
+      "minQuantity": 15,
+      "maxQuantity": null,
+      "imageUrl": null,
+      "createdAt": "2026-04-11T09:54:04.095Z",
+      "updatedAt": "2026-04-11T09:54:04.095Z"
+    }
+  ],
+  "locations": [
+    {
+      "id": "bd654073-ed93-46d7-a78e-3c70d348a751",
+      "label": "A-01-01",
+      "x": 1,
+      "y": 1,
+      "z": 1,
+      "status": "FULL",
+      "createdAt": "2026-04-11T09:54:04.099Z",
+      "updatedAt": "2026-04-11T09:54:04.166Z"
+    },
+    {
+      "id": "0c4b7b6b-d8ef-4b62-92ab-fba9c623af32",
+      "label": "A-01-02",
+      "x": 1,
+      "y": 1,
+      "z": 2,
+      "status": "AVAILABLE",
+      "createdAt": "2026-04-11T09:54:04.104Z",
+      "updatedAt": "2026-04-11T09:54:04.104Z"
+    },
+    {
+      "id": "1154b06e-7f2b-4abd-815e-449e86c00e4e",
+      "label": "A-02-01",
+      "x": 1,
+      "y": 2,
+      "z": 1,
+      "status": "FULL",
+      "createdAt": "2026-04-11T09:54:04.108Z",
+      "updatedAt": "2026-04-11T09:54:04.181Z"
+    },
+    {
+      "id": "0889fcdf-61f0-4054-8439-bad0a10d7e52",
+      "label": "A-02-02",
+      "x": 1,
+      "y": 2,
+      "z": 2,
+      "status": "AVAILABLE",
+      "createdAt": "2026-04-11T09:54:04.114Z",
+      "updatedAt": "2026-04-11T09:54:04.114Z"
+    },
+    {
+      "id": "3363697a-f032-494d-9bc3-2925ce526b0d",
+      "label": "B-01-01",
+      "x": 2,
+      "y": 1,
+      "z": 1,
+      "status": "FULL",
+      "createdAt": "2026-04-11T09:54:04.119Z",
+      "updatedAt": "2026-04-11T09:54:04.195Z"
+    },
+    {
+      "id": "ff6631f0-c183-4bad-8538-8451f979d8eb",
+      "label": "B-01-02",
+      "x": 2,
+      "y": 1,
+      "z": 2,
+      "status": "AVAILABLE",
+      "createdAt": "2026-04-11T09:54:04.124Z",
+      "updatedAt": "2026-04-11T09:54:04.124Z"
+    },
+    {
+      "id": "79365ab7-2050-495f-9801-51f650b39c10",
+      "label": "B-02-01",
+      "x": 2,
+      "y": 2,
+      "z": 1,
+      "status": "AVAILABLE",
+      "createdAt": "2026-04-11T09:54:04.129Z",
+      "updatedAt": "2026-04-11T09:54:04.129Z"
+    },
+    {
+      "id": "0c91085c-e996-4f1a-a9ff-e4e26d1b250a",
+      "label": "C-01-01",
+      "x": 3,
+      "y": 1,
+      "z": 1,
+      "status": "FULL",
+      "createdAt": "2026-04-11T09:54:04.133Z",
+      "updatedAt": "2026-04-11T09:54:04.208Z"
+    },
+    {
+      "id": "f976883f-3f85-4f32-ae5c-67c283741126",
+      "label": "C-01-02",
+      "x": 3,
+      "y": 1,
+      "z": 2,
+      "status": "AVAILABLE",
+      "createdAt": "2026-04-11T09:54:04.140Z",
+      "updatedAt": "2026-04-11T09:54:04.140Z"
+    },
+    {
+      "id": "d8b79506-67fc-40b4-bbc0-836969df7bf4",
+      "label": "C-02-01",
+      "x": 3,
+      "y": 2,
+      "z": 1,
+      "status": "AVAILABLE",
+      "createdAt": "2026-04-11T09:54:04.145Z",
+      "updatedAt": "2026-04-11T09:54:04.145Z"
+    },
+    {
+      "id": "eed856dc-4a59-4f65-bd8c-92a3b5ae477a",
+      "label": "C-02-02",
+      "x": 3,
+      "y": 2,
+      "z": 2,
+      "status": "AVAILABLE",
+      "createdAt": "2026-04-11T09:54:04.148Z",
+      "updatedAt": "2026-04-11T09:54:04.148Z"
+    }
+  ],
+  "inventories": [
+    {
+      "id": "25f48916-8f43-4b33-bbdd-b8b80330c0ba",
+      "productId": "2e224f48-b0aa-4116-bf40-cc66e768f8b1",
+      "locationId": "bd654073-ed93-46d7-a78e-3c70d348a751",
+      "quantity": 50,
+      "updatedAt": "2026-04-11T09:54:04.156Z"
+    },
+    {
+      "id": "f1018425-32ba-4c3d-ab59-581d57db7a00",
+      "productId": "c2069f66-b545-44ae-be29-9e609a4cd63f",
+      "locationId": "1154b06e-7f2b-4abd-815e-449e86c00e4e",
+      "quantity": 20,
+      "updatedAt": "2026-04-11T09:54:04.177Z"
+    },
+    {
+      "id": "d1ca5e00-2157-46c1-a1e7-757dbf1cfc6e",
+      "productId": "5b3f1b08-1113-4ac3-a73a-b0258f099e34",
+      "locationId": "3363697a-f032-494d-9bc3-2925ce526b0d",
+      "quantity": 30,
+      "updatedAt": "2026-04-11T09:54:04.190Z"
+    },
+    {
+      "id": "8aa12fdf-5a39-4d95-b367-62b621402126",
+      "productId": "fb12e36f-743f-465b-924f-0a96cf67f187",
+      "locationId": "0c91085c-e996-4f1a-a9ff-e4e26d1b250a",
+      "quantity": 100,
+      "updatedAt": "2026-04-11T09:54:04.202Z"
+    }
+  ],
+  "movements": [
+    {
+      "id": "44c56ed9-7996-482e-85a6-60e398504448",
+      "type": "IN",
+      "quantity": 50,
+      "productId": "2e224f48-b0aa-4116-bf40-cc66e768f8b1",
+      "locationId": "bd654073-ed93-46d7-a78e-3c70d348a751",
+      "fromLocationId": null,
+      "userId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "voucherStatus": "APPROVED",
+      "approvedBy": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "approvedAt": "2026-04-11T09:54:04.171Z",
+      "note": "Initial system stock-in",
+      "createdAt": "2026-04-11T09:54:04.172Z"
+    },
+    {
+      "id": "cda1207c-0cdf-4c46-9f33-2b5d2329814f",
+      "type": "IN",
+      "quantity": 20,
+      "productId": "c2069f66-b545-44ae-be29-9e609a4cd63f",
+      "locationId": "1154b06e-7f2b-4abd-815e-449e86c00e4e",
+      "fromLocationId": null,
+      "userId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "voucherStatus": "APPROVED",
+      "approvedBy": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "approvedAt": "2026-04-11T09:54:04.184Z",
+      "note": "Initial system stock-in",
+      "createdAt": "2026-04-11T09:54:04.185Z"
+    },
+    {
+      "id": "07087d42-e911-4f00-b084-684f216403b4",
+      "type": "IN",
+      "quantity": 30,
+      "productId": "5b3f1b08-1113-4ac3-a73a-b0258f099e34",
+      "locationId": "3363697a-f032-494d-9bc3-2925ce526b0d",
+      "fromLocationId": null,
+      "userId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "voucherStatus": "APPROVED",
+      "approvedBy": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "approvedAt": "2026-04-11T09:54:04.198Z",
+      "note": "Initial system stock-in",
+      "createdAt": "2026-04-11T09:54:04.198Z"
+    },
+    {
+      "id": "651c0f93-e05f-4306-84f2-8b2427247d4a",
+      "type": "IN",
+      "quantity": 100,
+      "productId": "fb12e36f-743f-465b-924f-0a96cf67f187",
+      "locationId": "0c91085c-e996-4f1a-a9ff-e4e26d1b250a",
+      "fromLocationId": null,
+      "userId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "voucherStatus": "APPROVED",
+      "approvedBy": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "approvedAt": "2026-04-11T09:54:04.212Z",
+      "note": "Initial system stock-in",
+      "createdAt": "2026-04-11T09:54:04.212Z"
+    }
+  ],
+  "permissions": [
+    {
+      "id": "c398d229-418b-44b7-8bfd-e4c7fc3f6a17",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "69fed8ed-26d5-4a8d-bb6e-b543594a8c29",
+      "permissionKey": "inventory:in",
+      "grantedAt": "2026-04-16T16:25:15.024Z"
+    },
+    {
+      "id": "800a6b8f-225e-4afe-841b-b97b0a250ead",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "69fed8ed-26d5-4a8d-bb6e-b543594a8c29",
+      "permissionKey": "inventory:out",
+      "grantedAt": "2026-04-16T16:25:15.024Z"
+    },
+    {
+      "id": "089c06ac-9f87-4dfb-b16a-77fc4badfb30",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "69fed8ed-26d5-4a8d-bb6e-b543594a8c29",
+      "permissionKey": "inventory:transfer",
+      "grantedAt": "2026-04-16T16:25:15.024Z"
+    },
+    {
+      "id": "d28d7077-23cf-415e-b236-04a2d526dfe8",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "be762f2f-93e5-4a5d-9fd9-17ef4a0f484a",
+      "permissionKey": "inventory:transfer",
+      "grantedAt": "2026-04-16T16:25:30.182Z"
+    },
+    {
+      "id": "28155ddf-1c98-48f1-8e6a-8fe94d7ce9a9",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "be762f2f-93e5-4a5d-9fd9-17ef4a0f484a",
+      "permissionKey": "reports:view",
+      "grantedAt": "2026-04-16T16:25:30.182Z"
+    },
+    {
+      "id": "b89b425c-3912-4f51-bba3-0bb866200707",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "permissionKey": "inventory:in",
+      "grantedAt": "2026-04-19T04:39:02.103Z"
+    },
+    {
+      "id": "d2a594ec-a9fa-4878-b588-d210e76cebbb",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "permissionKey": "inventory:out",
+      "grantedAt": "2026-04-19T04:39:02.103Z"
+    },
+    {
+      "id": "d2ac5405-4d2b-4c57-8a0c-970387937ee1",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "permissionKey": "inventory:transfer",
+      "grantedAt": "2026-04-19T04:39:02.103Z"
+    },
+    {
+      "id": "cd2d7dc5-ba2a-4701-80aa-cffb994f7469",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "permissionKey": "reports:view",
+      "grantedAt": "2026-04-19T04:39:02.103Z"
+    },
+    {
+      "id": "a270f242-44fe-4fd9-a47d-ac5f8f458907",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "permissionKey": "users:manage",
+      "grantedAt": "2026-04-19T04:39:02.103Z"
+    },
+    {
+      "id": "5b363eda-19a7-4558-9c1b-7a85b7cc2244",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "790519f0-2f47-4030-83f9-3c39adbe03f5",
+      "permissionKey": "inventory:in",
+      "grantedAt": "2026-04-19T04:39:08.517Z"
+    },
+    {
+      "id": "edb607d9-b243-43f8-951d-c6237a09f3bf",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "790519f0-2f47-4030-83f9-3c39adbe03f5",
+      "permissionKey": "inventory:out",
+      "grantedAt": "2026-04-19T04:39:08.517Z"
+    },
+    {
+      "id": "d9eae81f-61e5-4691-ade4-1e051c0e989e",
+      "grantorId": "7b40178c-91c7-426d-815d-7a40d216355c",
+      "granteeId": "790519f0-2f47-4030-83f9-3c39adbe03f5",
+      "permissionKey": "inventory:transfer",
+      "grantedAt": "2026-04-19T04:39:08.517Z"
+    }
+  ]
+}

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "sonner";
 import { LocationQRCode } from "@/components/locations/LocationQRCode";
+import { ArrowLeft } from "lucide-react";
 
 export function LocationEditClient({ initialData }: { initialData: any }) {
   const router = useRouter();
@@ -76,8 +77,9 @@ export function LocationEditClient({ initialData }: { initialData: any }) {
 
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Link href="/dashboard/locations" className="text-sm text-gray-500 hover:text-gray-700">
-          ← {t("locations.title")}
+        <Link href="/dashboard/locations" className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700">
+          <ArrowLeft className="w-4 h-4" />
+          {t("locations.title")}
         </Link>
         <span className="text-gray-300">/</span>
         <h1 className="text-2xl font-bold text-gray-900">{t("locations.edit")}</h1>

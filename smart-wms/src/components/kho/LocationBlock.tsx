@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Html, Text } from "@react-three/drei";
+import { Text } from "@react-three/drei";
 import { ThreeEvent } from "@react-three/fiber";
 
 interface Props {
@@ -49,27 +49,6 @@ export function LocationBlock({ location, position, onClick }: Props) {
       >
         {location.label}
       </Text>
-      
-      {/* 3D Tooltip Overlay */}
-      {hovered && (
-        <Html position={[0, 1.2, 0]} center zIndexRange={[100, 0]}>
-          <div className="bg-white/95 backdrop-blur rounded-lg shadow-xl p-3 text-xs border border-gray-200 pointer-events-none w-48 transition-all">
-            <p className="font-bold text-gray-900 border-b pb-1 mb-2 text-center text-sm">{location.label}</p>
-            <div className="grid grid-cols-2 gap-1 mb-1">
-              <span className="text-gray-500">Row (X):</span>
-              <span className="font-medium text-right text-gray-900">{location.x}</span>
-              <span className="text-gray-500">Col (Y):</span>
-              <span className="font-medium text-right text-gray-900">{location.y}</span>
-              <span className="text-gray-500">Level (Z):</span>
-              <span className="font-medium text-right text-gray-900">{location.z}</span>
-            </div>
-            <div className="mt-2 pt-2 border-t flex justify-between items-center">
-              <span className="text-gray-500">Status:</span>
-              <span className="font-bold" style={{ color }}>{location.status}</span>
-            </div>
-          </div>
-        </Html>
-      )}
     </group>
   );
 }

@@ -13,7 +13,7 @@ interface Props {
 const ROLES: Role[] = [
   "ADMIN", "DIRECTOR", "DEPUTY_DIRECTOR", "WAREHOUSE_MANAGER", 
   "WAREHOUSE_STAFF", "OFFICE_STAFF", "CHIEF_ACCOUNTANT", 
-  "DEPUTY_ACCOUNTANT", "ACCOUNTANT", "SALES_STAFF"
+  "DEPUTY_ACCOUNTANT", "ACCOUNTING_STAFF", "SALES_STAFF"
 ];
 
 export function CreateUserModal({ isOpen, onClose }: Props) {

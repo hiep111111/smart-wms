@@ -1,6 +1,7 @@
 export type Role =
   | "ADMIN"
   | "DIRECTOR"
+  | "DEPUTY_DIRECTOR"
   | "WAREHOUSE_MANAGER"
   | "WAREHOUSE_STAFF"
   | "OFFICE_STAFF"

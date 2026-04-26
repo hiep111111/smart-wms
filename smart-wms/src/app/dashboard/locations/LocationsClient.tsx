@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { Pagination } from "@/components/ui/Pagination";
 import { deleteLocation } from "@/actions/locations/deleteLocation";
 import type { LocationRow } from "@/actions/locations/getLocations";
 import { hasPermission } from "@/lib/auth/permissions";
@@ -38,6 +39,24 @@ export function LocationsClient({
     if (filterStatus !== "ALL" && loc.status !== filterStatus) match = false;
     return match;
   });
+
+  const ITEMS_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredLocations.length / ITEMS_PER_PAGE);
+  const paginatedLocations = filteredLocations.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterStatus(e.target.value);
+    setCurrentPage(1);
+  };
 
   const canManage = hasPermission(session, "locations:manage");
 
@@ -102,14 +121,14 @@ export function LocationsClient({
             type="text" 
             placeholder="Tìm mã vị trí..." 
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-9 pr-3 py-2 text-sm w-full sm:w-64 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
           <select 
             value={filterStatus} 
-            onChange={e => setFilterStatus(e.target.value)} 
+            onChange={handleFilterStatusChange} 
             className="text-sm border border-gray-300 rounded p-2 focus:border-blue-500"
           >
             <option value="ALL">Tất cả trạng thái</option>
@@ -147,7 +166,7 @@ export function LocationsClient({
                 </td>
               </tr>
             )}
-            {filteredLocations.map((loc) => {
+            {paginatedLocations.map((loc) => {
               const style = STATUS_STYLES[loc.status as keyof typeof STATUS_STYLES] || STATUS_STYLES.DEFAULT;
               let statusLabel = loc.status;
               if (loc.status === "AVAILABLE") statusLabel = t("locations.statusAvailable");
@@ -156,7 +175,7 @@ export function LocationsClient({
               if (loc.status === "RESERVED") statusLabel = t("locations.statusReserved") || "Reserved";
 
               return (
-                <tr key={loc.id} className="transition-colors hover:bg-gray-50">
+                <tr key={loc.id} className="transition-colors hover:bg-gray-50 h-14">
                   <td className="px-4 py-3 font-mono font-medium text-gray-900">{loc.label}</td>
                   <td className="px-4 py-3 text-gray-600">{loc.x}</td>
                   <td className="px-4 py-3 text-gray-600">{loc.y}</td>
@@ -187,11 +206,23 @@ export function LocationsClient({
                 </tr>
               );
             })}
+            {filteredLocations.length > 0 && Array.from({ length: Math.max(0, ITEMS_PER_PAGE - paginatedLocations.length) }).map((_, i) => (
+              <tr key={`empty-${i}`} className="h-14">
+                <td colSpan={6} className="px-4 py-3 text-transparent">&nbsp;</td>
+              </tr>
+            ))}
           </tbody>
         </table>
-        <div className="border-t border-gray-100 px-4 py-2 text-xs text-gray-400">
-          Hiển thị {filteredLocations.length} / {locations.length} {t("locations.title").toLowerCase()}
-        </div>
+        {filteredLocations.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredLocations.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            itemName={t("locations.title").toLowerCase()}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

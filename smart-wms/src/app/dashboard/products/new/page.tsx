@@ -6,9 +6,12 @@ import Link from "next/link";
 import { createProduct } from "@/actions/products/createProduct";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { ArrowLeft } from "lucide-react";
 
 export default function NewProductPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -48,12 +51,12 @@ export default function NewProductPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/dashboard/products"
-          className="text-sm text-gray-500 hover:text-gray-700"
+          className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
         >
-          ← Products
+          <ArrowLeft className="w-4 h-4" /> {t("products.title")}
         </Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-2xl font-bold text-gray-900">Create Product</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("products.create")}</h1>
       </div>
 
       <div className="max-w-lg rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -68,7 +71,7 @@ export default function NewProductPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
-            label="SKU *"
+            label={`${t("products.sku")} *`}
             name="sku"
             id="sku"
             required
@@ -76,7 +79,7 @@ export default function NewProductPage() {
             disabled={isPending}
           />
           <Input
-            label="Name *"
+            label={`${t("products.name")} *`}
             name="name"
             id="name"
             required
@@ -84,7 +87,7 @@ export default function NewProductPage() {
             disabled={isPending}
           />
           <Input
-            label="Category"
+            label={t("products.category")}
             name="category"
             id="category"
             placeholder="e.g. Electronics"
@@ -92,14 +95,14 @@ export default function NewProductPage() {
           />
           <div className="grid grid-cols-2 gap-4">
             <Input
-              label="Unit"
+              label={t("products.unit")}
               name="unit"
               id="unit"
               placeholder="Cái"
               disabled={isPending}
             />
             <Input
-              label="Min Quantity"
+              label={t("products.minQty")}
               name="minQuantity"
               id="minQuantity"
               type="number"
@@ -116,11 +119,11 @@ export default function NewProductPage() {
               loading={isPending}
               className="flex-1"
             >
-              {isPending ? "Creating…" : "Create Product"}
+              {isPending ? t("common.saving") : t("products.create")}
             </Button>
             <Link href="/dashboard/products">
               <Button type="button" variant="secondary" disabled={isPending}>
-                Cancel
+                {t("common.cancel")}
               </Button>
             </Link>
           </div>

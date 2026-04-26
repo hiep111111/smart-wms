@@ -4,6 +4,7 @@ import { useState } from "react";
 import { type StockReportRow } from "@/actions/reports/getStockReport";
 import { exportReport } from "@/actions/reports/exportReport";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { Pagination } from "@/components/ui/Pagination";
 
 export default function ReportsClient({ initialData }: { initialData: StockReportRow[] }) {
   const { t } = useLanguage();
@@ -23,6 +24,24 @@ export default function ReportsClient({ initialData }: { initialData: StockRepor
     if (filterCat !== "ALL" && r.category !== filterCat) match = false;
     return match;
   });
+
+  const ITEMS_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredData.length / ITEMS_PER_PAGE);
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterCatChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterCat(e.target.value);
+    setCurrentPage(1);
+  };
 
   async function handleExport() {
     setIsExporting(true);
@@ -80,14 +99,14 @@ export default function ReportsClient({ initialData }: { initialData: StockRepor
             type="text" 
             placeholder="Tìm kiếm Tên SP, SKU..." 
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-9 pr-3 py-2 text-sm w-full sm:w-64 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
           <select 
             value={filterCat} 
-            onChange={e => setFilterCat(e.target.value)} 
+            onChange={handleFilterCatChange} 
             className="text-sm border border-gray-300 rounded p-2 focus:border-blue-500"
           >
             <option value="ALL">Tất cả ngành hàng</option>
@@ -116,8 +135,8 @@ export default function ReportsClient({ initialData }: { initialData: StockRepor
                   </td>
                 </tr>
               ) : (
-                filteredData.map((row) => (
-                  <tr key={row.productId} className="hover:bg-gray-50/60 transition-colors">
+                paginatedData.map((row) => (
+                  <tr key={row.productId} className="hover:bg-gray-50/60 transition-colors h-14">
                     <td className="whitespace-nowrap px-6 py-3 font-mono text-xs text-gray-600">
                       {row.sku}
                     </td>
@@ -136,12 +155,24 @@ export default function ReportsClient({ initialData }: { initialData: StockRepor
                   </tr>
                 ))
               )}
+              {filteredData.length > 0 && Array.from({ length: Math.max(0, ITEMS_PER_PAGE - paginatedData.length) }).map((_, i) => (
+                <tr key={`empty-${i}`} className="h-14">
+                  <td colSpan={5} className="px-6 py-3 text-transparent">&nbsp;</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-        <div className="border-t border-gray-100 px-4 py-2 text-xs text-gray-400 bg-gray-50">
-          Hiển thị {filteredData.length} / {initialData.length} dòng dữ liệu
-        </div>
+        {filteredData.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredData.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            itemName={t("reports.title").toLowerCase()}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

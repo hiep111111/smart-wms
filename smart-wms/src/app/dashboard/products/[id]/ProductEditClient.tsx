@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { toast } from "sonner";
 import { ProductQRCode } from "@/components/products/ProductQRCode";
+import { ArrowLeft } from "lucide-react";
 
 export function ProductEditClient({ initialData }: { initialData: any }) {
   const router = useRouter();
@@ -65,8 +66,9 @@ export function ProductEditClient({ initialData }: { initialData: any }) {
       />
 
       <div className="flex items-center gap-3">
-        <Link href="/dashboard/products" className="text-sm text-gray-500 hover:text-gray-700">
-          ← {t("products.title")}
+        <Link href="/dashboard/products" className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700">
+          <ArrowLeft className="w-4 h-4" />
+          {t("products.title")}
         </Link>
         <span className="text-gray-300">/</span>
         <h1 className="text-2xl font-bold text-gray-900">{t("products.edit")}</h1>

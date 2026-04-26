@@ -26,7 +26,7 @@ export async function deleteLocation(id: string): Promise<ActionResult> {
     await db.location.delete({
       where: {
         id,
-        inventory: { none: {} }
+        inventories: { none: {} }
       }
     });
 

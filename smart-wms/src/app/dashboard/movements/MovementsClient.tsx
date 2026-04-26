@@ -4,6 +4,8 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import type { MovementRow } from "@/actions/inventory/getMovements";
 import Link from "next/link";
 import { useState } from "react";
+import { Search, ArrowRight } from "lucide-react";
+import { Pagination } from "@/components/ui/Pagination";
 
 const TYPE_STYLES: Record<string, { cls: string }> = {
   IN:       { cls: "bg-green-100 text-green-700" },
@@ -39,6 +41,24 @@ export function MovementsClient({ initialData }: { initialData: MovementRow[] })
     return match;
   });
 
+  const ITEMS_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredMovements.length / ITEMS_PER_PAGE);
+  const paginatedMovements = filteredMovements.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterType(e.target.value);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
@@ -51,22 +71,20 @@ export function MovementsClient({ initialData }: { initialData: MovementRow[] })
       <div className="flex flex-col sm:flex-row gap-4 mb-2">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <Search className="w-4 h-4" />
           </div>
           <input 
             type="text" 
             placeholder="Tìm mã SP, SKU, Người dùng..." 
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-9 pr-3 py-2 text-sm w-full sm:w-64 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
           <select 
             value={filterType} 
-            onChange={e => setFilterType(e.target.value)} 
+            onChange={handleFilterTypeChange} 
             className="text-sm border border-gray-300 rounded p-2 focus:border-blue-500"
           >
             <option value="ALL">Tất cả loại giao dịch</option>
@@ -102,16 +120,20 @@ export function MovementsClient({ initialData }: { initialData: MovementRow[] })
                 </td>
               </tr>
             )}
-            {filteredMovements.map((m) => {
+            {paginatedMovements.map((m) => {
               const type = TYPE_STYLES[m.type] ?? { cls: "bg-gray-100 text-gray-600" };
               const translatedType = m.type === "IN" ? t("scanner.in") : m.type === "OUT" ? t("scanner.out") : t("scanner.transfer");
               
               const locationLabel = m.type === "TRANSFER"
-                ? `${m.fromLocation?.label ?? "?"} → ${m.location.label}`
+                ? (
+                  <span className="flex items-center gap-1">
+                    {m.fromLocation?.label ?? "?"} <ArrowRight className="w-3 h-3" /> {m.location.label}
+                  </span>
+                )
                 : m.location.label;
 
               return (
-                <tr key={m.id} className="transition-colors hover:bg-gray-50">
+                <tr key={m.id} className="transition-colors hover:bg-gray-50 h-16">
                   <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">
                     {formatDate(new Date(m.createdAt))}
                   </td>
@@ -140,11 +162,23 @@ export function MovementsClient({ initialData }: { initialData: MovementRow[] })
                 </tr>
               );
             })}
+            {filteredMovements.length > 0 && Array.from({ length: Math.max(0, ITEMS_PER_PAGE - paginatedMovements.length) }).map((_, i) => (
+              <tr key={`empty-${i}`} className="h-16">
+                <td colSpan={7} className="px-4 py-3 text-transparent">&nbsp;</td>
+              </tr>
+            ))}
           </tbody>
         </table>
-        <div className="border-t border-gray-100 px-4 py-2 text-xs text-gray-400">
-          Hiển thị {filteredMovements.length} / {initialData.length} giao dịch
-        </div>
+        {filteredMovements.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredMovements.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            itemName={t("scanner.title").toLowerCase()}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

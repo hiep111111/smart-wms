@@ -8,6 +8,7 @@ import { CreateUserModal } from "./CreateUserModal";
 import { toggleUserStatus } from "@/actions/users/toggleUserStatus";
 import { toast } from "sonner";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { Pagination } from "@/components/ui/Pagination";
 
 export function UsersClient({ initialData }: { initialData: UserRow[] }) {
   const { t } = useLanguage();
@@ -27,6 +28,24 @@ export function UsersClient({ initialData }: { initialData: UserRow[] }) {
     if (filterRole !== "ALL" && u.role !== filterRole) match = false;
     return match;
   });
+
+  const ITEMS_PER_PAGE = 8;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleFilterRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilterRole(e.target.value);
+    setCurrentPage(1);
+  };
 
   function handleToggle(user: UserRow) {
     setConfirmUser(user);
@@ -87,14 +106,14 @@ export function UsersClient({ initialData }: { initialData: UserRow[] }) {
             type="text" 
             placeholder="Tìm kiếm username..." 
             value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
+            onChange={handleSearchChange}
             className="pl-9 pr-3 py-2 text-sm w-full sm:w-64 border border-gray-300 rounded focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
         </div>
         <div>
           <select 
             value={filterRole} 
-            onChange={e => setFilterRole(e.target.value)} 
+            onChange={handleFilterRoleChange} 
             className="text-sm border border-gray-300 rounded p-2 focus:border-blue-500"
           >
             <option value="ALL">Tất cả chức vụ (Role)</option>
@@ -123,8 +142,8 @@ export function UsersClient({ initialData }: { initialData: UserRow[] }) {
                   </td>
                 </tr>
               ) : (
-                filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50/60 transition-colors">
+                paginatedUsers.map((user) => (
+                  <tr key={user.id} className="hover:bg-gray-50/60 transition-colors h-14">
                     <td className="whitespace-nowrap px-6 py-3 font-medium text-gray-900">
                       {user.username}
                     </td>
@@ -167,12 +186,24 @@ export function UsersClient({ initialData }: { initialData: UserRow[] }) {
                   </tr>
                 ))
               )}
+              {filteredUsers.length > 0 && Array.from({ length: Math.max(0, ITEMS_PER_PAGE - paginatedUsers.length) }).map((_, i) => (
+                <tr key={`empty-${i}`} className="h-14">
+                  <td colSpan={5} className="px-6 py-3 text-transparent">&nbsp;</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-        <div className="border-t border-gray-100 px-4 py-2 text-xs text-gray-400 bg-gray-50">
-          Hiển thị {filteredUsers.length} / {initialData.length} người dùng
-        </div>
+        {filteredUsers.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={filteredUsers.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            itemName={t("users.title").toLowerCase()}
+            onPageChange={setCurrentPage}
+          />
+        )}
       </div>
     </div>
   );

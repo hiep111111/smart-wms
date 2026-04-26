@@ -6,9 +6,12 @@ import Link from "next/link";
 import { createLocation } from "@/actions/locations/createLocation";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { ArrowLeft } from "lucide-react";
 
 export default function NewLocationPage() {
   const router = useRouter();
+  const { t } = useLanguage();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -56,12 +59,12 @@ export default function NewLocationPage() {
       <div className="flex items-center gap-3">
         <Link
           href="/dashboard/locations"
-          className="text-sm text-gray-500 hover:text-gray-700"
+          className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
         >
-          ← Locations
+          <ArrowLeft className="w-4 h-4" /> {t("locations.title")}
         </Link>
         <span className="text-gray-300">/</span>
-        <h1 className="text-2xl font-bold text-gray-900">Create Location</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("locations.create")}</h1>
       </div>
 
       <div className="max-w-lg rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -76,7 +79,7 @@ export default function NewLocationPage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
-            label="Label *"
+            label={`${t("locations.label")} *`}
             name="label"
             id="label"
             required
@@ -87,7 +90,7 @@ export default function NewLocationPage() {
 
           <div className="grid grid-cols-3 gap-4">
             <Input
-              label="X *"
+              label={`${t("table.x")} *`}
               name="x"
               id="x"
               type="number"
@@ -98,7 +101,7 @@ export default function NewLocationPage() {
               disabled={isPending}
             />
             <Input
-              label="Y *"
+              label={`${t("table.y")} *`}
               name="y"
               id="y"
               type="number"
@@ -109,7 +112,7 @@ export default function NewLocationPage() {
               disabled={isPending}
             />
             <Input
-              label="Z *"
+              label={`${t("table.z")} *`}
               name="z"
               id="z"
               type="number"
@@ -132,11 +135,11 @@ export default function NewLocationPage() {
               loading={isPending}
               className="flex-1"
             >
-              {isPending ? "Creating…" : "Create Location"}
+              {isPending ? t("common.saving") : t("locations.create")}
             </Button>
             <Link href="/dashboard/locations">
               <Button type="button" variant="secondary" disabled={isPending}>
-                Cancel
+                {t("common.cancel")}
               </Button>
             </Link>
           </div>
